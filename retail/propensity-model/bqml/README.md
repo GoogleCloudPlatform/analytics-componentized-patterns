@@ -24,46 +24,44 @@ You’ll learn how to build a Propensity a model (if a Customer is going to buy)
 <ul>
     <li>Environment Setup</li>
     <ul>
-        <li>Setup AI Platform Pipelines (using the CloudConsole)</li>
+        <li>Setup Cloud AI Platform Pipelines (using the CloudConsole)</li>
         <li>Install KFP client</li>
         <li>Install Python packages for GCP Services</li>
     </ul>
-    <li>KFP Pipeline Setup</li>
+    <li>Kubeflow Pipelines (KFP) Setup</li>
     <ul>
         <li>Prepare Data for the training</li>
         <ul>
-            <li>Create/Validate Bucket/Folder</li>
-            <li>Create a PSV</li>
-            <li>Create/Validate BQ DS</li>
-            <li>Load the DS from BQ Google Store to BQ</li>
+            <li>Create/Validate a Google Cloud Storage Bucket/Folder</li>
+            <li>Create the input table in BigQuery</li>
         </ul>
         <li>Train the model</li>
         <li>Evaluate the model</li>
         <li>Prepare the Model for batch prediction</li>
         <ul>
             <li>Prepare a test dataset (a table)</li>
-            <li>Predict the model in BQ</li>
+            <li>Predict the model in BigQuery</li>
         </ul>
         <li>Prepare the Model for online prediction</li>
         <ul>
             <li>Create a new revision <i>(Model revision management)</i></li>
-            <li>Export the BQ Model</li>
+            <li>Export the BigQuery Model</li>
             <ul>
-                <li>Export the Model from BQ to GCS</li>
-                <li>Export the Training Stats to GCS</li>
-                <li>Export the Eval Metrics to GCS</li>
+                <li>Export the Model from BigQuery to Google Cloud Storage</li>
+                <li>Export the Training Stats to Google Cloud Storage</li>
+                <li>Export the Eval Metrics to Google Cloud Storage</li>
             </ul>
-            <li>Deploy to CAIP</li>
-            <li>Predict the model in CAIP</li>
+            <li>Deploy to Cloud AI Platform Prediction</li>
+            <li>Predict the model in Cloud AI Platform Prediction</li>
         </ul>
     </ul>
-    <li>Data Exploration using BQ, Pandas, matplotlib</li>
+    <li>Data Exploration using BigQuery, Pandas, matplotlib</li>
     <li>SDLC methodologies Adherence (opinionated)</li>
         <ul>
             <li>Variables naming conventions</li>
             <ul>
-                <li>Upper Case Names for Immutable variables</li>
-                <li>Lower Case Names for Mutable variables</li>
+                <li>Upper case Names for immutable variables</li>
+                <li>Lower case Names for mutable variables</li>
                 <li>Naming prefixes with <i>rpm_</i> or <i>RPM_</i></li>
             </ul>
             <li>Unit Tests</li>
@@ -73,11 +71,11 @@ You’ll learn how to build a Propensity a model (if a Customer is going to buy)
         <ul>
             <li>Pass inputs params through function args</li>
             <li>Pass params through pipeline args</li>
-            <li>Pass Output from one Comp as Input of another Comp</li>
+            <li>Pass Output from one Component as input of another</li>
             <li>Create an external Shared Volume available to all the Comp</li>
-            <li>Use built in Ops</li>
-            <li>Built light weight Comp</li>
-            <li>Set Comp not to cache</li>
+            <li>Use built in Operators</li>
+            <li>Built light weight Component</li>
+            <li>Set Component not to cache</li>
         </ul>
 </ul>
 
