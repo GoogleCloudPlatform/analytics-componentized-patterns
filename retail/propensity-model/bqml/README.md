@@ -26,7 +26,7 @@ You’ll learn how to build a Propensity a model (if a Customer is going to buy)
     <ul>
         <li>Setup Cloud AI Platform Pipelines (using the CloudConsole)</li>
         <li>Install KFP client</li>
-        <li>Install Python packages for GCP Services</li>
+        <li>Install Python packages for Google Cloud Services</li>
     </ul>
     <li>Kubeflow Pipelines (KFP) Setup</li>
     <ul>
