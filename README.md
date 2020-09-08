@@ -24,4 +24,4 @@ From sample dataset to activation, these componentized patterns are designed to 
 * Recommendation systems:
   * How to build a recommendation system on e-commerce data using BigQuery ML ([Code](retail/recommendation-system/bqml) | [Blog Article](https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110))
 * Propensity to purchase model:
-  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines ([Code](retail/propensity-model/bqml))
+  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines ([Code](retail/propensity-model/bqml) | [Blog Article](https://medium.com/@dpani/how-to-build-an-end-to-end-propensity-to-purchase-solution-using-bigquery-ml-and-kubeflow-pipelines-cd4161f734d9))
