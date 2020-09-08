@@ -22,6 +22,6 @@ From sample dataset to activation, these componentized patterns are designed to 
 
 ### Retail use cases
 * Recommendation systems:
-  * How to build a recommendation system on e-commerce data using BigQuery ML ([Code](retail/recommendation-system/bqml/README.md) | [Blog Article](https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110))
+  * How to build a recommendation system on e-commerce data using BigQuery ML ([Code](retail/recommendation-system/bqml) | [Blog Article](https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110))
 * Propensity to purchase model:
-  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines ([Code](retail/propensity-model/bqml/README.md))
+  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines ([Code](retail/propensity-model/bqml))
