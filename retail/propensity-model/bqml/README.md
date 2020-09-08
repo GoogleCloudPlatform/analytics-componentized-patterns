@@ -160,8 +160,8 @@ def bq_googlestr_dataset_to_bq_to_caip_pipeline(
 ):
 ```
 
-### Pass Output from one Comp as Input of another Comp example:
-Output 'rpm_table_id' from load_bq_ds_op comp passed as input to create_bq_ml_op comp
+### Pass Output from one Kubeflow Pipelines Component as Input of another Kubeflow Pipelines Component example:
+Output 'rpm_table_id' from load_bq_ds_op component passed as input to create_bq_ml_op comp
 ```python
     create_bq_ml_op = create_kfp_comp(create_bq_ml)(
         load_bq_ds_op.outputs['rpm_context'],
@@ -173,7 +173,7 @@ Output 'rpm_table_id' from load_bq_ds_op comp passed as input to create_bq_ml_op
         )
 ```
 
-### Create an external Shared Volume available to all the Comp example:
+### Create an external Shared Volume available to all the Kubeflow Pipelines Component example:
 ``` python
     #create a volume where the dataset will be temporarily stored.
     pvc_op = VolumeOp(
@@ -195,7 +195,7 @@ Output 'rpm_table_id' from load_bq_ds_op comp passed as input to create_bq_ml_op
     )
 ```
 
-### Built light weight Comp example:
+### Built light weight Kubeflow Pipelines Component example:
 ``` python
 # converting functions to container operations
 import kfp.components as comp
@@ -205,7 +205,7 @@ def create_kfp_comp(rpm_comp):
         base_image="google/cloud-sdk:latest")
 ```
 
-### Set Comp not to cache example:
+### Set Kubeflow Pipelines Component not to cache example:
 ```python
     get_versioned_bqml_model_export_path_op.execution_options.caching_strategy.max_cache_staleness = "P0D"
 ```
