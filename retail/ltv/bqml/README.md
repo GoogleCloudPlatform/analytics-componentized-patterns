@@ -1,5 +1,29 @@
 # Activate on LTV predictions.
-This folder shows an opiniated way to predict future monetary value of your customers using historical data.
+This guide refactors the [final part][series_final] of an existing series about predicting Lifetime Value (LTV). The series uses Tensorflow and shows multiple approaches such as statistical models or deep neural networks to predict the monetary value of customers. The final part leverages [AutoML Tables][automl_tables]. 
+
+This document shows an opiniated way to predict the monetary value of your customers for a specific time in the future using historical data.
+
+This updated version differs in the following:
+- Predicts future monetary value for a specific period of time.
+- Minimizes development time by using AutoML directly from [BigQuery ML][bq_ml].
+- Uses two new datasets for sales and customer data.
+- Creates additional training examples by moving the date that separates input and target orders (more details in the notebook)
+- Shows how to activate the LTV predictions to create similar audiences in marketing tools.
+
+The end to end flow assumes that you start with a data dump stored into BigQuery and runs through the following steps:
+
+1. Match your dataset to the sales dataset template.
+1. Create features from a list of orders.
+1. Train a model using monetary value as a label.
+1. Predict future monetary value of customers.
+1. Extract the emails of the top customers.
+
+For more general  information about LTV, read the [first part][series_first] of the series.
+
+[series_final]:https://cloud.google.com/solutions/machine-learning/clv-prediction-with-automl-tables
+[automl_tables]:https://cloud.google.com/automl-tables
+[bq_ml]:https://cloud.google.com/bigquery-ml/docs/bigqueryml-intro
+[series_first]:https://cloud.google.com/solutions/machine-learning/clv-prediction-with-offline-training-intro
 
 ## Files
 
