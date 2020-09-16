@@ -1,4 +1,4 @@
-# Activate on LTV predictions.
+# Activate on LTV predictions
 This guide refactors the [final part][series_final] of an existing series about predicting Lifetime Value (LTV). The series uses Tensorflow and shows multiple approaches such as statistical models or deep neural networks to predict the monetary value of customers. The final part leverages [AutoML Tables][automl_tables]. 
 
 This document shows an opiniated way to predict the monetary value of your customers for a specific time in the future using historical data.
@@ -35,7 +35,7 @@ You can use the notebook in this folder to manually run the flow using example d
 
 **[2. ./scripts](./scripts)**
 
-The scripts in this folder facilitate automation through BigQuery scripting, BigQuery stored procedures and bash scripting. Scripts use statements from the notebook to:
+The scripts in this folder facilitate automation through [BigQuery scripting][bq_scripting], [BigQuery stored procedures][bq_procedure] and bash scripting. Scripts use statements from the notebook to:
 1. Transform data.
 1. Train and use model to predict LTV.
 1. Extract emails of the top LTV customers.
@@ -46,7 +46,7 @@ The scripts assume that you already have the sales and crm datasets stored in Bi
 
 ## Recommended flow
 
-1. Do research in the Notebook.
+1. Do research in the [Jupyter Notebook][ltv_notebook].
 1. Extract important SQL.
 1. Write SQL scripts.
 1. Test end-to-end flow through bash scripts.
@@ -59,3 +59,7 @@ This code shows you the steps 1 to 4.
 This is not an officially supported Google product.
 
 All files in this folder are under the Apache License, Version 2.0 unless noted otherwise.
+
+[bq_scripting]:https://cloud.google.com/bigquery/docs/reference/standard-sql/scripting
+[bq_procedure]:https://cloud.google.com/blog/products/data-analytics/command-and-control-now-easier-in-bigquery-with-scripting-and-stored-procedures
+[ltv_notebook]:notebooks/bqml_automl_ltv_activate_lookalike.ipynb
