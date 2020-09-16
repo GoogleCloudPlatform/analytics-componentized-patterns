@@ -1,19 +1,3 @@
-## License
-```
-Copyright 2020 Google LLC
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     https://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 ## Analytics Componentized Patterns
@@ -22,6 +6,19 @@ From sample dataset to activation, these componentized patterns are designed to 
 
 ### Retail use cases
 * Recommendation systems:
-  * How to build a recommendation system on e-commerce data using BigQuery ML ([Code](retail/recommendation-system/bqml) | [Blog Article](https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110))
+  * How to build a recommendation system on e-commerce data using BigQuery ML. ([Code][recomm_code] | [Blog Article][recomm_blog])
 * Propensity to purchase model:
-  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines ([Code](retail/propensity-model/bqml) | [Blog Article](https://medium.com/@dpani/how-to-build-an-end-to-end-propensity-to-purchase-solution-using-bigquery-ml-and-kubeflow-pipelines-cd4161f734d9))
+  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines. ([Code][propen_code])
+* Activate on Lifetime Value predictions: 
+  * How to predict the monetary value of your customers and extract emails of the top customers to use in Adwords for example to create similar audiences. Automation is done by a combination of BigQuery Scripting, Stored Procedure and bash script. ([Code][ltv_code])
+
+[recomm_code]: retail/recommendation-system/bqml
+[recomm_blog]: https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110
+[propen_code]: retail/propensity-model/bqml
+[ltv_code]: retail/ltv/bqml
+
+
+## Disclaimer
+This is not an officially supported Google product.
+
+All files in this repository are under the [Apache License, Version 2.0](LICENSE.txt) unless noted otherwise.
