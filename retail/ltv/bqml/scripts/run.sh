@@ -154,6 +154,7 @@ gcloud config set project $PROJECT_ID
 
 bq show ${PROJECT_ID}:${DATASET_ID} || bq mk ${PROJECT_ID}:${DATASET_ID}
 
+# Load example datasets from public GCS to BQ if they don't exist.
 bq show ${TABLE_CRM} || \
 bq load \
   --project_id $PROJECT_ID \
