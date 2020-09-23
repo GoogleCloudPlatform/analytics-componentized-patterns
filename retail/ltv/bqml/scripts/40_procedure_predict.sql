@@ -16,9 +16,23 @@ CREATE OR REPLACE PROCEDURE PredictLTV(
   MODEL_NAME STRING,
   TABLE_DATA STRING,
   PREDICT_FROM_DATE STRING,
+  WINDOW_LENGTH INT64,
   TABLE_PREDICTION STRING)
 
 BEGIN
+
+-- Date at which an input transactions window starts.
+DECLARE WINDOW_START STRING;
+
+IF WINDOW_LENGTH != 0 THEN
+  SET WINDOW_START = (SELECT CAST(DATE_SUB(PREDICT_FROM_DATE, INTERVAL WINDOW_LENGTH DAY) AS STRING));
+ELSE
+  SET WINDOW_START = "1900-01-01";
+END IF;
+
+IF PREDICT_FROM_DATE = 'NULL' THEN
+  SET PREDICT_FROM_DATE = (SELECT CAST(CURRENT_DATE() AS STRING));
+END IF;
 
 EXECUTE IMMEDIATE """
 CREATE OR REPLACE TABLE """ || TABLE_PREDICTION || """ AS
@@ -48,7 +62,7 @@ FROM
           customer_id,
           SUM(value) AS monetary_orders,
           DATE_DIFF(MAX(order_day), MIN(order_day), DAY) AS recency,
-          DATE_DIFF("""|| PREDICT_FROM_DATE ||""", MIN(order_day), DAY) AS T,
+          DATE_DIFF(PARSE_DATE('%Y-%m-%d', '""" || PREDICT_FROM_DATE || """'), MIN(order_day), DAY) AS T,
           COUNT(DISTINCT order_day) AS cnt_orders,
           AVG(qty_articles) avg_basket_size,
           AVG(value) avg_basket_value,
@@ -60,6 +74,9 @@ FROM
           SUM(num_returns) num_returns,
         FROM
           """ || TABLE_DATA || """
+        WHERE
+          order_day <= PARSE_DATE('%Y-%m-%d', '""" || PREDICT_FROM_DATE || """') AND
+          order_day >= PARSE_DATE('%Y-%m-%d', '""" || WINDOW_START || """')
         GROUP BY
           customer_id
       )

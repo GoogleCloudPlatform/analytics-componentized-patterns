@@ -15,6 +15,7 @@
 CREATE OR REPLACE PROCEDURE PrepareForML(
   MAX_STDV_MONETARY INT64,
   MAX_STDV_QTY INT64,
+  WINDOW_LENGTH INT64,         -- How many days back for inputs transactions.
   WINDOW_STEP INT64,          -- How many days between thresholds.
   WINDOW_STEP_INITIAL INT64,  -- How many days for the first window.        
   LENGTH_FUTURE INT64,        -- How many days to predict for.  
@@ -25,7 +26,8 @@ BEGIN
 
 DECLARE MIN_DATE DATE;        -- Date of the first order in the dataset.                                     
 DECLARE MAX_DATE DATE;        -- Date of the final order in the dataset.
-DECLARE THRESHOLD_DATE DATE;  -- Date that separates inputs orders from target orders.   
+DECLARE THRESHOLD_DATE DATE;  -- Date that separates inputs orders from target orders.  
+DECLARE WINDOW_START DATE;    -- Date at which an input transactions window starts.
 DECLARE STEP INT64 DEFAULT 1; -- Index of the window being run.
 
 -- Aggregates per date per customers.
@@ -126,6 +128,14 @@ LOOP
     LEAVE;
   END IF;
 
+  -- Takes all transactions before the threshold date unless you decide
+  -- to use a different window lenght to test model performance.
+  IF WINDOW_LENGTH != 0 THEN
+    SET WINDOW_START = DATE_SUB(THRESHOLD_DATE, INTERVAL WINDOW_LENGTH DAY);
+  ELSE
+    SET WINDOW_START = MIN_DATE;
+  END IF;
+
   INSERT Featured
   SELECT
     -- CASE
@@ -166,7 +176,8 @@ LOOP
       FROM
         Aggred
       WHERE
-        order_day <= THRESHOLD_DATE
+        order_day <= THRESHOLD_DATE AND
+        order_day >= WINDOW_START
       GROUP BY
         customer_id
     ) tf

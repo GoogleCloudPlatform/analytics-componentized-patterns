@@ -16,8 +16,8 @@
 CREATE OR REPLACE PROCEDURE ExtractTopEmails(
   TOP_LTV_RATIO FLOAT64,
   TABLE_SOURCE STRING,
-  TABLE_OUTPUT STRING,
-  TABLE_CRM STRING)
+  TABLE_CRM STRING,
+  TABLE_OUTPUT STRING)
 
 BEGIN
 
@@ -42,7 +42,7 @@ FROM (
   FROM
     """ || TABLE_CRM || """ ) c
 ON
-  p.customer_id = c.customer_id
+  p.customer_id = CAST(c.customer_id AS STRING)
 WHERE
   -- Decides the size of your list of emails. For similar-audience use cases 
   -- where you need to find a minimum of matching emails, 20% should provide

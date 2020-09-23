@@ -15,12 +15,6 @@
 -- Transforms raw data to match fields of the template
 
 CREATE OR REPLACE PROCEDURE MatchFields(
-  FIELD_VISITOR_ID STRING,
-  FIELD_ORDER_ID STRING,
-  FILED_TRANSACTION_DATE STRING,
-  FIELD_SKU STRING,
-  FIELD_QTY STRING,
-  FIELD_UNIT_PRICE STRING,
   SOURCE_TABLE STRING)
 
 BEGIN
@@ -28,13 +22,13 @@ BEGIN
 -- || because dynamic table names are not supported.
 EXECUTE IMMEDIATE """
 CREATE OR REPLACE TEMP TABLE Orders AS 
-SELECT """ ||
-  FIELD_VISITOR_ID || """ AS customer_id, """ ||
-  FIELD_ORDER_ID || """ AS order_id, """ ||
-  FILED_TRANSACTION_DATE || """ AS transaction_date, """ ||
-  FIELD_SKU || """ AS product_sku, """ ||
-  FIELD_QTY || """ AS qty, """ ||
-  FIELD_UNIT_PRICE || """ AS unit_price 
+SELECT 
+  CAST(customer_id AS STRING) AS customer_id,
+  order_id AS order_id,
+  transaction_date AS transaction_date,
+  product_sku AS product_sku,
+  qty AS qty,
+  unit_price AS unit_price 
 FROM """ ||
   SOURCE_TABLE;
 
