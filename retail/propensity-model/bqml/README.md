@@ -19,6 +19,7 @@ limitations under the License.
 # How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines
 You’ll learn how to build a Propensity a model (if a Customer is going to buy) and how to orchestrate an ML Pipeline for doing so. You can use the code as a reference guide. Amend, replace, or add new AI Pipeline Components according to your use case. Please refer to the [Notebook](bqml_kfp_retail_propensity_to_purchase.ipynb), which contains further documentation and detailed instruction.
 
+To see a step-by-step tutorial that walks you through implementing this solution, see [Predicting customer propensity to buy by using BigQuery ML and AI Platform](https://cloud.google.com/solutions/predicting-customer-propensity-to-buy).   
 
 ### The Notebook does the followings:
 <ul>
