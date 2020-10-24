@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from setuptools import find_packages
+from setuptools import setup
 
-import setuptools
+REQUIRED_PACKAGES = ['scann==1.1.1']
 
-REQUIRED_PACKAGES = []
-
-setuptools.setup(
-    name='embedding_extractor',
-    description='Extract embeddings from BigQuery to Cloud Storage.',
-    version='0.1',
+setup(
+    name='scann-index-buider',
+    version='v1',
     install_requires=REQUIRED_PACKAGES,
-    py_modules=['pipeline'],
+    packages=find_packages(),
+    include_package_data=True,
+    description=''
 )
-
