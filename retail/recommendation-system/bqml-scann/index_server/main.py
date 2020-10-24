@@ -20,10 +20,15 @@ from flask import jsonify
 from lookup import EmbeddingLookup
 from matching import ScaNNMatcher
 
-# index_dir = os.environ['INDEX_DIR']
-index_dir = 'gs://ksalama-cloudml/bqml/scann_index'
-scann_matcher = ScaNNMatcher(index_dir)
-embedding_lookup = EmbeddingLookup()
+PROJECT_ID = os.environ['PROJECT_ID']
+REGION = os.environ['REGION']
+MODEL_NAME = os.environ['MODEL_NAME']
+MODEL_VERSION = os.environ['MODEL_VERSION']
+INDEX_DIR = os.environ['INDEX_DIR']
+
+scann_matcher = ScaNNMatcher(INDEX_DIR)
+embedding_lookup = EmbeddingLookup(
+    PROJECT_ID, REGION, MODEL_NAME, MODEL_VERSION)
 
 app = Flask(__name__)
 

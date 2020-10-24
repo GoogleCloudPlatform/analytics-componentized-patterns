@@ -15,20 +15,15 @@
 import googleapiclient.discovery
 from google.api_core.client_options import ClientOptions
 
-PROJECT_ID = 'ksalama-cloudml'
-REGION = 'us-central1'
-MODEL_NAME = 'songs_embeddings'
-MODEL_VERSION = 'v1'
-
 
 class EmbeddingLookup(object):
     
-  def __init__(self):
-    api_endpoint = f'https://{REGION}-ml.googleapis.com'
+  def __init__(self, project, region, model_name, version):
+    api_endpoint = f'https://{region}-ml.googleapis.com'
     client_options = ClientOptions(api_endpoint=api_endpoint)
     self.service = googleapiclient.discovery.build(
       serviceName='ml', version='v1', client_options=client_options)
-    self.name = f'projects/{PROJECT_ID}/models/{MODEL_NAME}/versions/{MODEL_VERSION}'
+    self.name = f'projects/{project}/models/{model_name}/versions/{version}'
     print(f'Service name: {self.name}')
     
   def lookup(self, instances):
