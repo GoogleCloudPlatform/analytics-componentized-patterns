@@ -20,7 +20,7 @@ def get_args():
   args_parser = argparse.ArgumentParser()
 
   args_parser.add_argument(
-    '--embedding-file-path',
+    '--embedding-files-path',
     help='GCS or local paths to embedding files',
     required=True
   )
@@ -49,7 +49,7 @@ def get_args():
 def main():
   args = get_args()
   indexer.build(
-    embedding_files_pattern=args.embedding_file_path, 
+    embedding_files_pattern=args.embedding_files_path, 
     output_dir=args.output_dir,
     num_leaves=args.num_leaves
   )
