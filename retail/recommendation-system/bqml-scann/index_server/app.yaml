@@ -22,3 +22,11 @@ resources:
   cpu: 4
   memory_gb: 16
   disk_size_gb: 50
+  
+  
+env_variables:
+  INDEX_DIR: ""
+  MODEL_NAME: ""
+  MODEL_VERSION: ""
+  PROJECT_ID: ""
+  REGION: ""
