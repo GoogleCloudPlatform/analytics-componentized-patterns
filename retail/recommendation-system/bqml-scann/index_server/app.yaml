@@ -1,0 +1,32 @@
+runtime: python
+env: flex
+entrypoint: gunicorn --bind :$PORT main:app --timeout 1800 --threads 8
+
+runtime_config:
+  python_version: 3
+
+service: index-server
+
+readiness_check:
+  path: "/readiness_check"
+  check_interval_sec: 10
+  timeout_sec: 5
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 1800
+
+manual_scaling:
+  instances: 1
+
+resources:
+  cpu: 4
+  memory_gb: 16
+  disk_size_gb: 50
+  
+  
+env_variables:
+  INDEX_DIR: ""
+  MODEL_NAME: ""
+  MODEL_VERSION: ""
+  PROJECT_ID: ""
+  REGION: ""
