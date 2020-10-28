@@ -6,6 +6,7 @@ model to train the embeddings, and the open-source [ScaNN framework](https://ai.
 approximate nearest neighbour index.
 
 1. Compute pointwise mutual information (PMI) between items based on their cooccurrences.
+<<<<<<< HEAD
 2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
 3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
 4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
@@ -67,3 +68,11 @@ See the License for the specific language governing permissions and limitations 
 **This is not an official Google product but sample code provided for an educational purpose**
 
 
+=======
+2. Train item embeddings using BigQuery ML Matrix Factorization, using item PMI as implicit feedback.
+3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
+4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
+5. Serve the embedding as an approximate nearest neighbor index using ScaNN
+
+![Workflow](diagram.png)
+>>>>>>> 789235981ee63da0a3bfd5785159f072e06d4551
