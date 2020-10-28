@@ -16,6 +16,10 @@
 import tensorflow as tf
 import numpy as np
 
+
+VOCABULARY_FILE_NAME = 'vocabulary.txt'
+
+
 class EmbeddingLookup(tf.keras.Model):
 
   def __init__(self, embedding_files_prefix, **kwargs):
@@ -44,17 +48,15 @@ class EmbeddingLookup(tf.keras.Model):
     self.embeddings = np.append(np.array(embeddings), oov_embedding, axis=0)
     print(f'Embeddings: {self.embeddings.shape}')
     
-    
     # Write vocabualry file.
     print('Writing vocabulary to file ...')
-    with open('vocabulary.txt', 'w') as f:
+    with open(VOCABULARY_FILE_NAME, 'w') as f:
       for item in vocabulary: 
         f.write(f'{item}\n')
     print('Vocabulary file written and will be added as a model asset.')
     
-    self.vocabulary_file = tf.saved_model.Asset('vocabulary.txt')
+    self.vocabulary_file = tf.saved_model.Asset(VOCABULARY_FILE_NAME)
    
-
     initializer = tf.lookup.KeyValueTensorInitializer(
         keys=vocabulary, values=list(range(len(vocabulary))))
     self.token_to_id = tf.lookup.StaticHashTable(

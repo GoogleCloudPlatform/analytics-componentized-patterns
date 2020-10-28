@@ -53,7 +53,7 @@ def average_embedding(entry):
     dimensions = len(embedding1)
     embedding = [0.0] * dimensions
     for idx in range(dimensions):
-      embedding[idx] = (embedding1[idx] + embedding2[idx]) / 2.0
+      embedding[idx] = (embedding1[idx] + embedding2[idx])
   else:
    embedding = embedding_pair[0]
   
