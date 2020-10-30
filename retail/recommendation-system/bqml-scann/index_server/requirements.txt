@@ -1,0 +1,5 @@
+pip==20.2.4
+Flask==1.1.2
+gunicorn==20.0.4
+google-api-python-client==1.12.5
+scann==1.1.1

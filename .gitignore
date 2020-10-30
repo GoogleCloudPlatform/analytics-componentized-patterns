@@ -1,3 +1,4 @@
 .ipynb_checkpoints/
 .DS_Store
 .vscode/
+**/*.cpython-37..pyc
