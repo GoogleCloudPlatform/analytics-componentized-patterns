@@ -23,8 +23,13 @@ METRIC = 'dot_product'
 DIMENSIONS_PER_BLOCK = 2
 ANISOTROPIC_QUANTIZATION_THRESHOLD = 0.2
 NUM_NEIGHBOURS = 10
+<<<<<<< HEAD
 NUM_LEAVES_TO_SEARCH = 200
 REORDER_NUM_NEIGHBOURS = 200
+=======
+NUM_LEAVES_TO_SEARCH = 100
+REORDER_NUM_NEIGHBOURS = 100
+>>>>>>> 789235981ee63da0a3bfd5785159f072e06d4551
 TOKENS_FILE_NAME = 'tokens'
 
 
@@ -45,7 +50,11 @@ def load_embeddings(embedding_files_pattern):
         embedding = parts[1:]
         embedding = np.array([float(v) for v in embedding])
         normalized_embedding = embedding / np.linalg.norm(embedding)
+<<<<<<< HEAD
         embedding_list.append(normalized_embedding)
+=======
+        embedding_list.append(embedding)
+>>>>>>> 789235981ee63da0a3bfd5785159f072e06d4551
         tokens.append(item_Id)
         
     print(f'{len(embedding_list)} embeddings are loaded.')

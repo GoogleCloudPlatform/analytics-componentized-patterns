@@ -9,7 +9,7 @@ approximate nearest neighbour index.
 2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
 3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
 4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
-5. Serve the embedding as an approximate nearest neighbor index using ScaNN for real-time similar items matching.
+5. Serve the embedding as an approximate nearest neighbor index using ScaNN on AI Platform Prediction for real-time similar items matching.
 
 ![Workflow](diagram.png)
 
@@ -46,7 +46,8 @@ This notebook covers building an approximate nearest neighbor index for the embe
 using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
 
 [05_serve_scann_for_matching.ipynb)](05_serve_scann_for_matching.ipynb) - 
-This notebook covers deploying the ScaNN index to AppEngine for real-time similar item matching. The matching service works as follows:
+This notebook covers deploying the ScaNN index to AI Platform Prediction with a custom container for real-time similar item matching. 
+The matching service works as follows:
 1. Accepts a query item Id.
 2. Looks up the embedding of the query item Id from Embedding Lookup Model in AI Platform Prediction.
 3. Uses the ScaNN index to find similar item Ids for the given query item embedding.
@@ -65,5 +66,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 See the License for the specific language governing permissions and limitations under the License.
 
 **This is not an official Google product but sample code provided for an educational purpose**
-
 
