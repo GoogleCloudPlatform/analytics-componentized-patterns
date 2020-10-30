@@ -1,0 +1,7 @@
+steps:
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--tag', '${_IMAGE_URL}', '.', '--build-arg=PORT=${_PORT}']
+  dir: 'index_server'
+
+images: ['${_IMAGE_URL}']

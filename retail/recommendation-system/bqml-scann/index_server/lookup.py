@@ -24,7 +24,7 @@ class EmbeddingLookup(object):
     self.service = googleapiclient.discovery.build(
       serviceName='ml', version='v1', client_options=client_options)
     self.name = f'projects/{project}/models/{model_name}/versions/{version}'
-    print(f'Service name: {self.name}')
+    print(f'Embedding lookup service {self.name} is initialized.')
     
   def lookup(self, instances):
     request_body = {'instances': instances}
