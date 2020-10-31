@@ -45,7 +45,7 @@ as a SavedModel, and serving the embeddings in Cloud AI Platform Prediction as a
 This notebook covers building an approximate nearest neighbor index for the embeddings 
 using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
 
-[05_serve_scann_for_matching.ipynb](05_serve_scann_for_matching.ipynb) - 
+[05_serve_scann_for_matching_caip.ipynb](05_serve_scann_for_matching_caip.ipynb) - 
 This notebook covers deploying the ScaNN index to AI Platform Prediction with a custom container for real-time similar item matching. 
 The matching service works as follows:
 1. Accepts a query item Id.
