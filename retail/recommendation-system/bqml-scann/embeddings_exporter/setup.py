@@ -18,8 +18,8 @@ import setuptools
 REQUIRED_PACKAGES = []
 
 setuptools.setup(
-    name='embedding_extractor',
-    description='Extract embeddings from BigQuery to Cloud Storage.',
+    name='embedding_exporter',
+    description='Export embeddings from BigQuery to Cloud Storage.',
     version='0.1',
     install_requires=REQUIRED_PACKAGES,
     py_modules=['pipeline'],
