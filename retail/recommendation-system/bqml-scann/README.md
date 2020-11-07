@@ -21,8 +21,10 @@ Complete the following steps to set up your GCP environment:
 1. In the [Cloud Console, on the project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Cloud project.
 2. Make sure that [billing is enabled](https://cloud.google.com/billing/docs/how-to/modify-project) for your Google Cloud project. 
 3. [Enable the APIs](https://console.cloud.google.com/apis/library)
- required for the solution: Compute Engine, Dataflow, AI Platform.
-4. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.2 runtime.
+ required for the solution: Compute Engine, Dataflow, Datastore, AI Platform, Cloud Build, and BigQuery.
+4. Create or have access to an existing [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
+5. Create a [Datastore database instance](https://cloud.google.com/datastore/docs/quickstart)  with Firestore in Datastore Mode.
+6. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.2 runtime.
 
 
 To go through the tasks for running the solution, you need to open the JupyterLab environment in the AI Notebook and clone the repository.
