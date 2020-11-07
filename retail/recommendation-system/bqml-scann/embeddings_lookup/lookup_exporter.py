@@ -16,13 +16,7 @@
 import tensorflow as tf
 import numpy as np
 
-<<<<<<< HEAD
-
 VOCABULARY_FILE_NAME = 'vocabulary.txt'
-
-
-=======
->>>>>>> 789235981ee63da0a3bfd5785159f072e06d4551
 class EmbeddingLookup(tf.keras.Model):
 
   def __init__(self, embedding_files_prefix, **kwargs):
@@ -50,29 +44,15 @@ class EmbeddingLookup(tf.keras.Model):
     oov_embedding = np.zeros((1, embedding_size))
     self.embeddings = np.append(np.array(embeddings), oov_embedding, axis=0)
     print(f'Embeddings: {self.embeddings.shape}')
-    
-<<<<<<< HEAD
+
     # Write vocabualry file.
     print('Writing vocabulary to file ...')
     with open(VOCABULARY_FILE_NAME, 'w') as f:
-=======
-    
-    # Write vocabualry file.
-    print('Writing vocabulary to file ...')
-    with open('vocabulary.txt', 'w') as f:
->>>>>>> 789235981ee63da0a3bfd5785159f072e06d4551
       for item in vocabulary: 
         f.write(f'{item}\n')
     print('Vocabulary file written and will be added as a model asset.')
-    
-<<<<<<< HEAD
-    self.vocabulary_file = tf.saved_model.Asset(VOCABULARY_FILE_NAME)
-   
-=======
-    self.vocabulary_file = tf.saved_model.Asset('vocabulary.txt')
-   
 
->>>>>>> 789235981ee63da0a3bfd5785159f072e06d4551
+    self.vocabulary_file = tf.saved_model.Asset(VOCABULARY_FILE_NAME)
     initializer = tf.lookup.KeyValueTensorInitializer(
         keys=vocabulary, values=list(range(len(vocabulary))))
     self.token_to_id = tf.lookup.StaticHashTable(
