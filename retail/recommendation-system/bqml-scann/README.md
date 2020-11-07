@@ -14,6 +14,32 @@ approximate nearest neighbour index.
 ![Workflow](diagram.png)
 
 
+## Before you begin
+
+Complete the following steps to set up your GCP environment:
+
+1. In the [Cloud Console, on the project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Cloud project.
+2. Make sure that [billing is enabled](https://cloud.google.com/billing/docs/how-to/modify-project) for your Google Cloud project. 
+3. [Enable the APIs](https://console.cloud.google.com/apis/library)
+ required for the solution: Compute Engine, Dataflow, Datastore, AI Platform, Cloud Build, and BigQuery.
+4. Create or have access to an existing [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
+5. Create a [Datastore database instance](https://cloud.google.com/datastore/docs/quickstart)  with Firestore in Datastore Mode.
+6. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.2 runtime.
+
+
+To go through the tasks for running the solution, you need to open the JupyterLab environment in the AI Notebook and clone the repository.
+
+1. In the AI Platform Notebook list, click Open Jupyterlab. This opens the JupyterLab environment in your browser.
+
+2. To launch a terminal tab, click the Terminal icon from the Launcher menu.
+
+3. In the terminal, clone the `analytics-componentized-patterns` repository:
+
+    ```git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git```
+
+When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
+
+
 ## Using the Notebooks to Run the Solution
 
 We provide the following notebooks to run the steps of the solutions:

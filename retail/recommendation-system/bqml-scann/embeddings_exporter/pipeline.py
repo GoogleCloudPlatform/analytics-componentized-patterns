@@ -14,7 +14,6 @@
 
 
 import os
-import numpy as np
 import apache_beam as beam
 
 EMBEDDING_FILE_PREFIX = 'embeddings'
@@ -53,11 +52,7 @@ def average_embedding(entry):
     dimensions = len(embedding1)
     embedding = [0.0] * dimensions
     for idx in range(dimensions):
-<<<<<<< HEAD
       embedding[idx] = (embedding1[idx] + embedding2[idx])
-=======
-      embedding[idx] = (embedding1[idx] + embedding2[idx]) / 2.0
->>>>>>> 789235981ee63da0a3bfd5785159f072e06d4551
   else:
    embedding = embedding_pair[0]
   
