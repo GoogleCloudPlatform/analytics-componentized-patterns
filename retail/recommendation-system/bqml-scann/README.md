@@ -44,7 +44,7 @@ When the command finishes, navigate to the `analytics-componentized-patterns/ret
 
 We provide the following notebooks to run the steps of the solutions:
 
-[00_import_bq_to_datastore.ipynb](00_import_bq_to_datastore.ipynb) - 
+[00_prep_bq_and_datastore.ipynb](00_prep_bq_and_datastore.ipynb) - 
 This is a prerequisite note book that you can use to:
  1. Copy the `bigquery-samples dataset.playlists` public data to your dataset.
  We use the playlist data to create embeddings for songs based on their cooccurrences
