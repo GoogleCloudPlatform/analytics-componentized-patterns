@@ -63,17 +63,20 @@ This is a prerequisite note book that you can use to:
 This notebook covers exporting the trained embeddings from the Matrix Factorization BigQuery ML Model to Cloud Storage,
 as CSV files, using Apache Beam and Cloud Dataflow.
 
-[03_deploy_embeddings_lookup_caip.ipynb](03_deploy_embeddings_lookup_caip.ipynb) - 
-This notebook covers wrapping the item embeddings in a Keras model, exporting it
-as a SavedModel, and serving the embeddings in Cloud AI Platform Prediction as an item-embedding lookup.
+[03_create_embedding_lookup_model.ipynb](03_create_embedding_lookup_model.ipynb) - 
+This notebook covers wrapping the item embeddings in a Keras model and exporting it
+as a SavedModel, to act as an item-embedding lookup.
 
 [04_build_embeddings_scann.ipynb](04_build_embeddings_scann.ipynb) - 
 This notebook covers building an approximate nearest neighbor index for the embeddings 
 using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
 
-[05_serve_scann_for_matching_caip.ipynb](05_serve_scann_for_matching_caip.ipynb) - 
-This notebook covers deploying the ScaNN index to AI Platform Prediction with a custom container for real-time similar item matching. 
-The matching service works as follows:
+[05_deploy_lookup_and scann_caipipynb](05_deploy_lookup_and scann_caip.ipynb) - 
+This notebook covers:
+1. Deploying the Embedding Lookup SavedModel to AI Platform Prediction. 
+2. Deploying the ScaNN index to AI Platform Prediction, using a Custom Container, for real-time similar item matching. 
+
+The ScaNN matching service works as follows:
 1. Accepts a query item Id.
 2. Looks up the embedding of the query item Id from Embedding Lookup Model in AI Platform Prediction.
 3. Uses the ScaNN index to find similar item Ids for the given query item embedding.
