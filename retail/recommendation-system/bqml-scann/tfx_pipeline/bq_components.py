@@ -34,7 +34,7 @@ def compute_pmi(
   max_group_size: Parameter[int],
   item_cooc: OutputArtifact[Dataset]):
   
-  stored_proc = f'{dataset}.sp_Compute_PM'
+  stored_proc = f'{dataset}.sp_ComputePMI'
   query = f'''
       DECLARE min_item_frequency INT64;
       DECLARE max_group_size INT64;
@@ -46,9 +46,9 @@ def compute_pmi(
   '''
   result_table = 'item_cooc'
 
-  client = bigquery.Client(project=project_id)
   logging.info(f'Starting computing PMI...')
   
+  client = bigquery.Client(project=project_id)
   query_job = client.query(query)
   query_job.result() # Wait for the job to complete
   
@@ -64,8 +64,10 @@ def train_item_matching_model(
   project_id: Parameter[str],
   dataset: Parameter[str],
   dimensions: Parameter[int],
+  item_cooc: InputArtifact[Dataset],
   model: OutputArtifact[BQModel]):
     
+  item_cooc_table = item_cooc.get_string_custom_property('bq_result_table')
   stored_proc = f'{dataset}.sp_TrainItemMatchingModel'
   query = f'''
     DECLARE dimensions INT64 DEFAULT {dimensions};
@@ -73,11 +75,13 @@ def train_item_matching_model(
   '''
   model_name = 'item_matching_model'
   
-  client = bigquery.Client(project=project_id)
+  logging.info(f'Using item co-occurrence table: {item_cooc_table}')
   logging.info(f'Starting training of the model...')
+    
+#   client = bigquery.Client(project=project_id)
+#   query_job = client.query(query)
+#   query_job.result()
   
-  query_job = client.query(query)
-  query_job.result()
   
   logging.info(f'Model training completed. Output in {dataset}.{model_name}.')
   
@@ -90,17 +94,20 @@ def train_item_matching_model(
 def extract_embeddings(
   project_id: Parameter[str],
   dataset: Parameter[str],
+  model: InputArtifact[BQModel],
   item_embeddings: OutputArtifact[Dataset]):
   
+  embedding_model_name = model.get_string_custom_property('bq_model_name')
   stored_proc = f'{dataset}.sp_ExractEmbeddings'
   query = f'''
       CALL {stored_proc}();
   '''
   result_table = 'item_embeddings'
 
-  client = bigquery.Client(project=project_id)
+  logging.info(f'Extracting item embedding from: {embedding_model_name}')
   logging.info(f'Starting exporting embeddings...')
   
+  client = bigquery.Client(project=project_id)
   query_job = client.query(query)
   query_job.result() # Wait for the job to complete
   
