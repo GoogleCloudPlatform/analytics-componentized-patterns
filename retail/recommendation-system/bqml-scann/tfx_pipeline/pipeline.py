@@ -71,21 +71,19 @@ def create_pipeline(pipeline_name: Text,
     model=bqml_trainer.outputs.model
   )
   
-  fetch_embeddings_query = f'''
-    SELECT item_Id, embedding
-    FROM {bq_dataset_name}.item_embeddings
-  '''
-  
   # Export embeddings from BigQuery to Cloud Storage.
   embeddings_exporter = BigQueryExampleGen(
-    query=fetch_embeddings_query,
+    query=f'''
+      SELECT item_Id, embedding
+      FROM {bq_dataset_name}.item_embeddings
+    ''',
     output_config=example_gen_pb2.Output(
       split_config=example_gen_pb2.SplitConfig(splits=[
         example_gen_pb2.SplitConfig.Split(name='train', hash_buckets=1)])),
     instance_name='BQExportEmbeddings'
   )
   
-  embeddings_exporter.add_upstream_node(embeddings_extractor)
+  #embeddings_exporter.add_upstream_node(embeddings_extractor)
   
   # Create an embedding lookup SavedModel.
   lookup_savedmodel_exporter = tfx.components.Trainer(
@@ -94,7 +92,7 @@ def create_pipeline(pipeline_name: Text,
     module_file=LOOKUP_EXPORTER_MODULE,
     train_args={'num_steps': 0},
     eval_args={'num_steps': 0},
-    schema = tfx.types.Channel(tfx.types.standard_artifacts.Schema),
+    schema=tfx.types.Channel(tfx.types.standard_artifacts.Schema),
     examples=embeddings_exporter.outputs.examples,
     instance_name='ExportEmbeddingLookupSavedModel'
   )
@@ -112,12 +110,13 @@ def create_pipeline(pipeline_name: Text,
   # Build the ScaNN index.
   scann_indexer = tfx.components.Trainer(
     custom_executor_spec=executor_spec.ExecutorClassSpec(
-      trainer_executor.GenericExecutor),
+      ai_platform_trainer_executor.GenericExecutor),
     module_file=SCANN_INDEXER_MODULE,
     train_args={'num_steps': num_leaves},
     eval_args={'num_steps': 0},
     schema = tfx.types.Channel(tfx.types.standard_artifacts.Schema),
     examples=embeddings_exporter.outputs.examples,
+    custom_config={'ai_platform_training_args': ai_platform_training_args},
     instance_name='BuildScaNNIndex'
   )
   
