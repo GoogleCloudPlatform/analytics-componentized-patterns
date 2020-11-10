@@ -71,8 +71,34 @@ as a SavedModel, to act as an item-embedding lookup.
 This notebook covers building an approximate nearest neighbor index for the embeddings 
 using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
 
-[05_deploy_lookup_and scann_caipipynb](05_deploy_lookup_and scann_caip.ipynb) - 
-This notebook covers:
+## Running the Solution using TFX on AI Platform Pipelines
+
+We provide a [TFX pipeline](tfx_pipeline) implementation to the solution, as follows:
+1. Compute PMI using the [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
+2. Train BigQuery Matrix Factorization Model using the [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
+3. Extract the Embeddings from the Model to a Table using the [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
+4. Export the embeddings as TFRecords using the [BigQueryExampleGen](https://www.tensorflow.org/tfx/api_docs/python/tfx/extensions/google_cloud_big_query/example_gen/component/BigQueryExampleGen) component.
+5. Create an embedding lookup SavedModel using the [Trainer](https://www.tensorflow.org/tfx/api_docs/python/tfx/components/Trainer) component.
+6. Push the embedding lookp model to a model registry directory using the [Pusher](https://www.tensorflow.org/tfx/guide/pusher) component.
+7. Build the ScaNN index using the [Trainer](https://www.tensorflow.org/tfx/api_docs/python/tfx/components/Trainer) component.
+8. Push the ScaNN index to a model registry directory using [Container-based](https://www.tensorflow.org/tfx/guide/container_component) component.
+
+![tfx](tfx.png)
+
+We provide the following notebooks for the TFX pipeline:
+1. [tfx00_bq_procedures.ipynb](tfx00_bq_procedures.ipynb) - This notebook covers creating the 
+Stored Procedure required by the solution to the target BigQuery dataset.
+2. [tfx01_interactive](tfx01_interactive.ipynb) - This notebook covers interactive execution of the 
+TFX pipeline components.
+3. [tfx02_deploy_run](tfx02_deploy_run.ipynb) - This notebook covers building the Docker container image required by
+the TFX pipeline and the AI Platform Training job, compiling the TFX pipeline, and deploying the pipeline to 
+AI Platform Pipelines.
+
+## Deploying the Embedding Lookup and ScaNN index to AI Platform
+
+After running the solution, a lookup SaveModel and a ScaNN index will be produced.
+To deploy these artifacts to AI Platform as prediction service, you can use the
+[05_deploy_lookup_and scann_caipipynb](05_deploy_lookup_and scann_caip.ipynb) notebook, which covers:
 1. Deploying the Embedding Lookup SavedModel to AI Platform Prediction. 
 2. Deploying the ScaNN index to AI Platform Prediction, using a Custom Container, for real-time similar item matching. 
 
