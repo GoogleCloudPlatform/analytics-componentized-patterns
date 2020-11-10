@@ -11,7 +11,7 @@ approximate nearest neighbour index.
 4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
 5. Serve the embedding as an approximate nearest neighbor index using ScaNN on AI Platform Prediction for real-time similar items matching.
 
-![Workflow](diagram.png)
+![Workflow](figures/diagram.png)
 
 
 ## Before you begin
@@ -83,7 +83,7 @@ We provide a [TFX pipeline](tfx_pipeline) implementation to the solution, as fol
 7. Build the ScaNN index using the [Trainer](https://www.tensorflow.org/tfx/api_docs/python/tfx/components/Trainer) component.
 8. Push the ScaNN index to a model registry directory using [Container-based](https://www.tensorflow.org/tfx/guide/container_component) component.
 
-![tfx](tfx.png)
+![tfx](figures/tfx.png)
 
 We provide the following notebooks for the TFX pipeline:
 1. [tfx00_bq_procedures.ipynb](tfx00_bq_procedures.ipynb) - This notebook covers creating the 
