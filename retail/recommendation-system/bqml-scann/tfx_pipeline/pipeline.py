@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Census training pipeline DSL."""
+"""TFX pipeline DSL."""
 
 import os
 import sys
@@ -83,7 +83,7 @@ def create_pipeline(pipeline_name: Text,
     instance_name='BQExportEmbeddings'
   )
   
-  #embeddings_exporter.add_upstream_node(embeddings_extractor)
+  embeddings_exporter.add_upstream_node(embeddings_extractor)
   
   # Create an embedding lookup SavedModel.
   lookup_savedmodel_exporter = tfx.components.Trainer(
@@ -94,7 +94,7 @@ def create_pipeline(pipeline_name: Text,
     eval_args={'num_steps': 0},
     schema=tfx.types.Channel(tfx.types.standard_artifacts.Schema),
     examples=embeddings_exporter.outputs.examples,
-    instance_name='ExportEmbeddingLookupSavedModel'
+    instance_name='ExportEmbeddingLookup'
   )
 
   # Push the embedding lookup model to model registry location.
@@ -130,18 +130,23 @@ def create_pipeline(pipeline_name: Text,
     instance_name='ScaNNIndexPusher'
   )
   
+  components=[
+    pmi_computer,
+    bqml_trainer,
+    embeddings_extractor,
+    embeddings_exporter,
+    lookup_savedmodel_exporter,
+    embedding_lookup_pusher,
+    scann_indexer,
+    embedding_scann_pusher
+  ]
+  
+  print('The pipeline consists of the following components:')
+  print([component.id for component in components])
+  
   return pipeline.Pipeline(
     pipeline_name=pipeline_name,
     pipeline_root=pipeline_root,
-    components=[
-      pmi_computer,
-      bqml_trainer,
-      embeddings_extractor,
-      embeddings_exporter,
-      lookup_savedmodel_exporter,
-      embedding_lookup_pusher,
-      scann_indexer,
-      embedding_scann_pusher
-    ],
+    components=components,
   enable_cache=enable_cache,
   beam_pipeline_args=beam_pipeline_args)
