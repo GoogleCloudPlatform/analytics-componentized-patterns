@@ -21,10 +21,10 @@ Complete the following steps to set up your GCP environment:
 1. In the [Cloud Console, on the project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Cloud project.
 2. Make sure that [billing is enabled](https://cloud.google.com/billing/docs/how-to/modify-project) for your Google Cloud project. 
 3. [Enable the APIs](https://console.cloud.google.com/apis/library)
- required for the solution: Compute Engine, Dataflow, Datastore, AI Platform, Cloud Build, and BigQuery.
+ required for the solution: Compute Engine, Dataflow, Datastore, AI Platform, Artifact Registry, Identity and Access Management, Cloud Build, and BigQuery.
 4. Create or have access to an existing [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
 5. Create a [Datastore database instance](https://cloud.google.com/datastore/docs/quickstart)  with Firestore in Datastore Mode.
-6. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.2 runtime.
+6. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.3 runtime.
 
 
 To go through the tasks for running the solution, you need to open the JupyterLab environment in the AI Notebook and clone the repository.
@@ -44,7 +44,7 @@ When the command finishes, navigate to the `analytics-componentized-patterns/ret
 
 We provide the following notebooks to run the steps of the solutions:
 
-[00_import_bq_to_datastore.ipynb](00_import_bq_to_datastore.ipynb) - 
+[00_prep_bq_and_datastore.ipynb](00_prep_bq_and_datastore.ipynb) - 
 This is a prerequisite note book that you can use to:
  1. Copy the `bigquery-samples dataset.playlists` public data to your dataset.
  We use the playlist data to create embeddings for songs based on their cooccurrences
@@ -63,17 +63,46 @@ This is a prerequisite note book that you can use to:
 This notebook covers exporting the trained embeddings from the Matrix Factorization BigQuery ML Model to Cloud Storage,
 as CSV files, using Apache Beam and Cloud Dataflow.
 
-[03_deploy_embeddings_lookup_caip.ipynb](03_deploy_embeddings_lookup_caip.ipynb) - 
-This notebook covers wrapping the item embeddings in a Keras model, exporting it
-as a SavedModel, and serving the embeddings in Cloud AI Platform Prediction as an item-embedding lookup.
+[03_create_embedding_lookup_model.ipynb](03_create_embedding_lookup_model.ipynb) - 
+This notebook covers wrapping the item embeddings in a Keras model and exporting it
+as a SavedModel, to act as an item-embedding lookup.
 
 [04_build_embeddings_scann.ipynb](04_build_embeddings_scann.ipynb) - 
 This notebook covers building an approximate nearest neighbor index for the embeddings 
 using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
 
-[05_serve_scann_for_matching_caip.ipynb](05_serve_scann_for_matching_caip.ipynb) - 
-This notebook covers deploying the ScaNN index to AI Platform Prediction with a custom container for real-time similar item matching. 
-The matching service works as follows:
+## Running the Solution using TFX on AI Platform Pipelines
+
+We provide a [TFX pipeline](tfx_pipeline) implementation to the solution, as follows:
+1. Compute PMI using the [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
+2. Train BigQuery Matrix Factorization Model using the [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
+3. Extract the Embeddings from the Model to a Table using the [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
+4. Export the embeddings as TFRecords using the [BigQueryExampleGen](https://www.tensorflow.org/tfx/api_docs/python/tfx/extensions/google_cloud_big_query/example_gen/component/BigQueryExampleGen) component.
+5. Create an embedding lookup SavedModel using the [Trainer](https://www.tensorflow.org/tfx/api_docs/python/tfx/components/Trainer) component.
+6. Push the embedding lookp model to a model registry directory using the [Pusher](https://www.tensorflow.org/tfx/guide/pusher) component.
+7. Build the ScaNN index using the [Trainer](https://www.tensorflow.org/tfx/api_docs/python/tfx/components/Trainer) component.
+8. Push the ScaNN index to a model registry directory using [Container-based](https://www.tensorflow.org/tfx/guide/container_component) component.
+
+![tfx](tfx.png)
+
+We provide the following notebooks for the TFX pipeline:
+1. [tfx00_bq_procedures.ipynb](tfx00_bq_procedures.ipynb) - This notebook covers creating the 
+Stored Procedure required by the solution to the target BigQuery dataset.
+2. [tfx01_interactive](tfx01_interactive.ipynb) - This notebook covers interactive execution of the 
+TFX pipeline components.
+3. [tfx02_deploy_run](tfx02_deploy_run.ipynb) - This notebook covers building the Docker container image required by
+the TFX pipeline and the AI Platform Training job, compiling the TFX pipeline, and deploying the pipeline to 
+AI Platform Pipelines.
+
+## Deploying the Embedding Lookup and ScaNN index to AI Platform
+
+After running the solution, a lookup SaveModel and a ScaNN index will be produced.
+To deploy these artifacts to AI Platform as prediction service, you can use the
+[05_deploy_lookup_and scann_caipipynb](05_deploy_lookup_and scann_caip.ipynb) notebook, which covers:
+1. Deploying the Embedding Lookup SavedModel to AI Platform Prediction. 
+2. Deploying the ScaNN index to AI Platform Prediction, using a Custom Container, for real-time similar item matching. 
+
+The ScaNN matching service works as follows:
 1. Accepts a query item Id.
 2. Looks up the embedding of the query item Id from Embedding Lookup Model in AI Platform Prediction.
 3. Uses the ScaNN index to find similar item Ids for the given query item embedding.

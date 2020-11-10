@@ -1,10 +1,10 @@
-CREATE OR REPLACE PROCEDURE recommendations.sp_TrainItemMatchingModel(
+CREATE OR REPLACE PROCEDURE @DATASET_NAME.sp_TrainItemMatchingModel(
   IN dimensions INT64
 )
 
 BEGIN
 
-  CREATE OR REPLACE MODEL recommendations.item_matching_model
+  CREATE OR REPLACE MODEL @DATASET_NAME.item_matching_model
   OPTIONS(
     MODEL_TYPE='matrix_factorization', 
     FEEDBACK_TYPE='implicit',
@@ -12,14 +12,14 @@ BEGIN
     NUM_FACTORS=(dimensions),
     USER_COL='item1_Id', 
     ITEM_COL='item2_Id',
-    RATING_COL='target',
+    RATING_COL='score',
     DATA_SPLIT_METHOD='no_split'
   )
   AS
   SELECT 
     item1_Id, 
     item2_Id, 
-    cooc AS target
-  FROM recommendations.item_cooc;
+    cooc *  pmi AS score
+  FROM @DATASET_NAME.item_cooc;
 
 END
