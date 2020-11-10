@@ -78,10 +78,9 @@ def train_item_matching_model(
   logging.info(f'Using item co-occurrence table: {item_cooc_table}')
   logging.info(f'Starting training of the model...')
     
-#   client = bigquery.Client(project=project_id)
-#   query_job = client.query(query)
-#   query_job.result()
-  
+  client = bigquery.Client(project=project_id)
+  query_job = client.query(query)
+  query_job.result()
   
   logging.info(f'Model training completed. Output in {dataset}.{model_name}.')
   
