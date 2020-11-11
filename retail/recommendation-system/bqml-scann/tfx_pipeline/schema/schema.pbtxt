@@ -1,0 +1,28 @@
+feature {
+  name: "item_Id"
+  type: BYTES
+  int_domain {
+  }
+  presence {
+    min_fraction: 1.0
+    min_count: 1
+  }
+  shape {
+    dim {
+      size: 1
+    }
+  }
+}
+feature {
+  name: "embedding"
+  type: FLOAT
+  presence {
+    min_fraction: 1.0
+    min_count: 1
+  }
+  shape {
+    dim {
+      size: 50
+    }
+  }
+}

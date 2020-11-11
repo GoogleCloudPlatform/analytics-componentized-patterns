@@ -34,15 +34,13 @@ if __name__ == '__main__':
       'imageUri': config.ML_IMAGE_URI
     }
   }
-  
-  beam_tmp_folder = '{}/beam/tmp'.format(config.ARTIFACT_STORE_URI)
-    
+   
   beam_pipeline_args = [
-    '--runner=' + config.BEAM_RUNNER,
+    f'--runner={config.BEAM_RUNNER}',
     '--experiments=shuffle_mode=auto',
-    '--project=' + config.PROJECT_ID,
-    '--temp_location=' + beam_tmp_folder,
-    '--region=' + config.REGION,
+    f'--project={config.PROJECT_ID}',
+    f'--temp_location={config.ARTIFACT_STORE_URI}/beam/tmp',
+    f'--region={config.REGION}',
   ]
     
   
@@ -72,11 +70,7 @@ if __name__ == '__main__':
       ptype=int
   )
     
-  pipeline_root = '{}/{}/{}'.format(
-    config.ARTIFACT_STORE_URI, 
-    config.PIPELINE_NAME,
-    kfp.dsl.RUN_ID_PLACEHOLDER
-  )
+  pipeline_root = f'{config.ARTIFACT_STORE_URI}/{config.PIPELINE_NAME}/{kfp.dsl.RUN_ID_PLACEHOLDER}'
 
   # Set KubeflowDagRunner settings
   metadata_config = kubeflow_dag_runner.get_default_kubeflow_metadata_config()
@@ -93,6 +87,7 @@ if __name__ == '__main__':
     pipeline.create_pipeline(
       pipeline_name=config.PIPELINE_NAME,
       pipeline_root=pipeline_root,
+      project_id=config.PROJECT_ID,
       bq_dataset_name=config.BQ_DATASET_NAME,
       min_item_frequency=min_item_frequency,
       max_group_size=max_group_size,

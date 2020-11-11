@@ -25,18 +25,23 @@ from tfx.extensions.google_cloud_ai_platform.trainer import executor as ai_platf
 from tfx.orchestration import pipeline
 from tfx.proto import example_gen_pb2
 from tfx.extensions.google_cloud_big_query.example_gen.component import BigQueryExampleGen
+from ml_metadata.proto import metadata_store_pb2
 
-import config
-import bq_components
+try:
+  from . import bq_components
+except:
+  import bq_components
 
 EMBEDDING_LOOKUP_MODEL_NAME = 'embeddings_lookup'
 SCANN_INDEX_MODEL_NAME = 'embeddings_scann'
-LOOKUP_EXPORTER_MODULE='lookup_exporter.py'
-SCANN_INDEXER_MODULE='scann_indexer.py'
+LOOKUP_EXPORTER_MODULE = 'lookup_exporter.py'
+SCANN_INDEXER_MODULE = 'scann_indexer.py'
+SCHEMA_DIR = 'schema'
 
 
 def create_pipeline(pipeline_name: Text, 
-                    pipeline_root: Text, 
+                    pipeline_root: Text,
+                    project_id: Text,
                     bq_dataset_name: Text,
                     min_item_frequency: data_types.RuntimeParameter,
                     max_group_size: data_types.RuntimeParameter,
@@ -45,12 +50,21 @@ def create_pipeline(pipeline_name: Text,
                     ai_platform_training_args: Dict[Text, Text],
                     beam_pipeline_args: List[Text],
                     model_regisrty_uri: Text,
+                    metadata_connection_config: Optional[
+                      metadata_store_pb2.ConnectionConfig] = None,
                     enable_cache: Optional[bool] = False) -> pipeline.Pipeline:
   """Implements the online news pipeline with TFX."""
 
+  
+  local_executor_spec = executor_spec.ExecutorClassSpec(
+    trainer_executor.GenericExecutor)
+
+  caip_executor_spec = executor_spec.ExecutorClassSpec(
+    ai_platform_trainer_executor.GenericExecutor)
+  
   # Compute the PMI.
   pmi_computer = bq_components.compute_pmi(
-    project_id=config.PROJECT_ID,
+    project_id=project_id,
     dataset=bq_dataset_name,
     min_item_frequency=min_item_frequency,
     max_group_size=max_group_size
@@ -58,7 +72,7 @@ def create_pipeline(pipeline_name: Text,
   
   # Train the BQML Matrix Factorization model.
   bqml_trainer = bq_components.train_item_matching_model(
-    project_id=config.PROJECT_ID,
+    project_id=project_id,
     dataset=bq_dataset_name,
     item_cooc=pmi_computer.outputs.item_cooc,
     dimensions=dimensions,
@@ -66,7 +80,7 @@ def create_pipeline(pipeline_name: Text,
   
   # Extract the embeddings from the BQML model to a tabl.
   embeddings_extractor = bq_components.extract_embeddings(
-    project_id=config.PROJECT_ID,
+    project_id=project_id,
     dataset=bq_dataset_name,
     model=bqml_trainer.outputs.model
   )
@@ -83,16 +97,23 @@ def create_pipeline(pipeline_name: Text,
     instance_name='BQExportEmbeddings'
   )
   
+  # Add dependency from embeddings_exporter to embeddings_extractor.
   embeddings_exporter.add_upstream_node(embeddings_extractor)
+  
+  # Import embeddings schema.
+  schema_importer = tfx.components.ImporterNode(
+    instance_name='RawSchemaImporter',
+    source_uri=SCHEMA_DIR,
+    artifact_type=tfx.types.standard_artifacts.Schema
+  )
   
   # Create an embedding lookup SavedModel.
   lookup_savedmodel_exporter = tfx.components.Trainer(
-    custom_executor_spec=executor_spec.ExecutorClassSpec(
-      trainer_executor.GenericExecutor),
+    custom_executor_spec=local_executor_spec,
     module_file=LOOKUP_EXPORTER_MODULE,
     train_args={'num_steps': 0},
     eval_args={'num_steps': 0},
-    schema=tfx.types.Channel(tfx.types.standard_artifacts.Schema),
+    schema=schema_importer.outputs.result,
     examples=embeddings_exporter.outputs.examples,
     instance_name='ExportEmbeddingLookup'
   )
@@ -109,12 +130,11 @@ def create_pipeline(pipeline_name: Text,
   
   # Build the ScaNN index.
   scann_indexer = tfx.components.Trainer(
-    custom_executor_spec=executor_spec.ExecutorClassSpec(
-      ai_platform_trainer_executor.GenericExecutor),
+    custom_executor_spec=caip_executor_spec if ai_platform_training_args else local_executor_spec,
     module_file=SCANN_INDEXER_MODULE,
     train_args={'num_steps': num_leaves},
     eval_args={'num_steps': 0},
-    schema = tfx.types.Channel(tfx.types.standard_artifacts.Schema),
+    schema=schema_importer.outputs.result,
     examples=embeddings_exporter.outputs.examples,
     custom_config={'ai_platform_training_args': ai_platform_training_args},
     instance_name='BuildScaNNIndex'
@@ -135,6 +155,7 @@ def create_pipeline(pipeline_name: Text,
     bqml_trainer,
     embeddings_extractor,
     embeddings_exporter,
+    schema_importer,
     lookup_savedmodel_exporter,
     embedding_lookup_pusher,
     scann_indexer,
@@ -148,5 +169,7 @@ def create_pipeline(pipeline_name: Text,
     pipeline_name=pipeline_name,
     pipeline_root=pipeline_root,
     components=components,
-  enable_cache=enable_cache,
-  beam_pipeline_args=beam_pipeline_args)
+    beam_pipeline_args=beam_pipeline_args,
+    metadata_connection_config=metadata_connection_config,
+    enable_cache=enable_cache
+  )
