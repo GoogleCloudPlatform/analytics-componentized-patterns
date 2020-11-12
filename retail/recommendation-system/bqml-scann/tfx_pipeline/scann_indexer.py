@@ -16,6 +16,8 @@ import os
 import sys
 import scann
 import tensorflow as tf
+import tensorflow_data_validation as tfdv
+from tensorflow_transform.tf_metadata import schema_utils
 import numpy as np
 import math
 import pickle
@@ -30,21 +32,33 @@ REORDER_NUM_NEIGHBOURS = 200
 TOKENS_FILE_NAME = 'tokens'
 
 
-def load_embeddings(embedding_files_pattern):
-    
+def load_embeddings(embedding_files_pattern, schema_file_path):
+
   embeddings = list()
   vocabulary = list()
+  
+  logging.info('Loading schema...')
+  schema = tfdv.load_schema_text(schema_file_path)
+  feature_sepc = schema_utils.schema_as_feature_spec(schema).feature_spec
+  logging.info('Schema is loadded.')
+
+  def _gzip_reader_fn(filenames):
+    return tf.data.TFRecordDataset(filenames, compression_type='GZIP')
+    
+  dataset = tf.data.experimental.make_batched_features_dataset(
+    embedding_files_pattern, 
+    batch_size=1, 
+    num_epochs=1,
+    features=feature_sepc,
+    reader=_gzip_reader_fn,
+    shuffle=False
+  )
 
   # Read embeddings from tfrecord files.
   logging.info('Loading embeddings from files ...')
-  embedding_files = tf.io.gfile.glob(embedding_files_pattern)
-  dataset = tf.data.TFRecordDataset(embedding_files, compression_type="GZIP")
-  for tfrecord in dataset:
-    example = tf.train.Example.FromString(tfrecord.numpy())
-    item_Id = example.features.feature['item_Id'].bytes_list.value[0].decode()
-    embedding = np.array(example.features.feature['embedding'].float_list.value)
-    vocabulary.append(item_Id)
-    embeddings.append(embedding)
+  for tfrecord_batch in dataset:
+    vocabulary.append(tfrecord_batch["item_Id"].numpy()[0][0].decode())
+    embeddings.append(tfrecord_batch["embedding"].numpy()[0])
   logging.info('Embeddings loaded.')
     
   return vocabulary, np.array(embeddings)
@@ -90,9 +104,10 @@ def run_fn(params):
   embedding_files_path = params.train_files
   output_dir = params.serving_model_dir
   num_leaves = params.train_steps
+  schema_file_path = params.schema_file
   
   logging.info("Indexer started...")
-  tokens, embeddings = load_embeddings(embedding_files_path)
+  tokens, embeddings = load_embeddings(embedding_files_path, schema_file_path)
   index = build_index(embeddings, num_leaves)
   save_index(index, tokens, output_dir)
   logging.info("Indexer finished.")
