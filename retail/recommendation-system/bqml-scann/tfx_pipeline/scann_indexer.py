@@ -46,7 +46,7 @@ def load_embeddings(embedding_files_pattern, schema_file_path):
     return tf.data.TFRecordDataset(filenames, compression_type='GZIP')
     
   dataset = tf.data.experimental.make_batched_features_dataset(
-    embedding_files_prefix, 
+    embedding_files_pattern, 
     batch_size=1, 
     num_epochs=1,
     features=feature_sepc,
