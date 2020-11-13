@@ -1,4 +1,4 @@
-# Real-time Item-to-item Recommendation BigQuery ML Matrix Factorization and ScaNN
+# Real-time Item-to-item Recommendation with BigQuery ML Matrix Factorization and ScaNN
 
 This directory contains a sample code for training and serving embeddings 
 for real-time similarity matching. The system utilizes [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
