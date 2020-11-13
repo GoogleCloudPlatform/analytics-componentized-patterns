@@ -13,6 +13,12 @@ approximate nearest neighbour index.
 
 ![Workflow](figures/diagram.png)
 
+## Tutorial Dataset
+
+We use the public `bigquery-samples.playlists` BigQuery dataset to demonstrate
+the solutions. We use the playlist data to learn embeddings for songs based on their cooccurrences
+in different playlist. The learnt embeddings can be used to match and recommend relevant songs.
+to a given song or playlist.
 
 ## Before you begin
 
@@ -28,47 +34,41 @@ Complete the following steps to set up your GCP environment:
 7. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.3 runtime.
 8. [Deploy AI Platform Pipelines](https://cloud.google.com/ai-platform/pipelines/docs/setting-up) to run the TFX pipeline.
 
-To go through the tasks for running the solution, you need to open the JupyterLab environment in the AI Notebook and clone the repository.
-
+To go through the tasks for running the solution, you need to open the JupyterLab environment in the AI Notebook and clone the repository:
 1. In the AI Platform Notebook list, click Open Jupyterlab. This opens the JupyterLab environment in your browser.
-
 2. To launch a terminal tab, click the Terminal icon from the Launcher menu.
-
 3. In the terminal, clone the `analytics-componentized-patterns` repository:
 
-    ```git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git```
+   ```git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git```
 
 When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
 
 
 ## Using the Notebooks to Run the Solution
 
-We provide the following notebooks to run the steps of the solutions:
+We provide the following notebooks to prepare the BigQuery run environment 
+and the steps of the solution:
 
-[00_prep_bq_and_datastore.ipynb](00_prep_bq_and_datastore.ipynb) - 
-This is a prerequisite note book that you can use to:
- 1. Copy the `bigquery-samples dataset.playlists` public data to your dataset.
- We use the playlist data to create embeddings for songs based on their cooccurrences
- in different playlist.
- 2. Export the songs information to Datastore so that you can lookup the information
-  of a given song in a timely fashion, rather than querying BigQuery.
-  
-[01_train_bqml_mf_pmi.ipynb](01_train_bqml_mf_pmi.ipynb) - This notebook covers
- the following steps: 
-1. Explore the BigQuery data based on the `bigquery-samples dataset.playlists` dataset.
-2. Compute pairwise item cooccurrences. 
-3. Train a Matrix Factorization model using BigQuery ML.
-4. Explore the trained embeddings.
- 
-[02_export_bqml_mf_embeddings.ipynb](02_export_bqml_mf_embeddings.ipynb) - 
+**Preparing the BigQuery environment**
+
+1. [00_prep_bq_and_datastore.ipynb](00_prep_bq_and_datastore.ipynb) - 
+This is a prerequisite notebook that covers:
+   1. Copying the `bigquery-samples.playlists.playlist` table to your BigQuery dataset.
+   2. Exporting the songs information to Datastore so that you can lookup the information of a given song in real-time.
+2. [00_prep_bq_procedures](00_prep_bq_procedures.ipynb) - This is a prerequisite notebook that covers creating the BigQuery 
+stored procedures executed by the solution.
+
+**Running the solution**
+
+1. [01_train_bqml_mf_pmi.ipynb](01_train_bqml_mf_pmi.ipynb) - This notebook covers computing pairwise item cooccurrences
+to train the the BigQuery ML Matrix Factorization model, and generate embeddings for the items.
+2. [02_export_bqml_mf_embeddings.ipynb](02_export_bqml_mf_embeddings.ipynb) - 
 This notebook covers exporting the trained embeddings from the Matrix Factorization BigQuery ML Model to Cloud Storage,
 as CSV files, using Apache Beam and Cloud Dataflow.
-
-[03_create_embedding_lookup_model.ipynb](03_create_embedding_lookup_model.ipynb) - 
+3. [03_create_embedding_lookup_model.ipynb](03_create_embedding_lookup_model.ipynb) - 
 This notebook covers wrapping the item embeddings in a Keras model and exporting it
 as a SavedModel, to act as an item-embedding lookup.
-
-[04_build_embeddings_scann.ipynb](04_build_embeddings_scann.ipynb) - 
+4. [04_build_embeddings_scann.ipynb](04_build_embeddings_scann.ipynb) - 
 This notebook covers building an approximate nearest neighbor index for the embeddings 
 using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
 
@@ -87,18 +87,17 @@ We provide a [TFX pipeline](tfx_pipeline) implementation to the solution, as fol
 
 ![tfx](figures/tfx.png)
 
-We provide the following notebooks for the TFX pipeline:
-1. [tfx00_bq_procedures.ipynb](tfx00_bq_procedures.ipynb) - This notebook covers creating the 
-Stored Procedure required by the solution to the target BigQuery dataset.
-2. [tfx01_interactive](tfx01_interactive.ipynb) - This notebook covers interactive execution of the 
+The implementation of the pipeline is in the [tfx_pipeline](tfx_pipeline) directory. 
+We provide the following notebooks to facilitate running the TFX pipeline:
+1. [tfx01_interactive](tfx01_interactive.ipynb) - This notebook covers interactive execution of the 
 TFX pipeline components.
-3. [tfx02_deploy_run](tfx02_deploy_run.ipynb) - This notebook covers building the Docker container image required by
+2. [tfx02_deploy_run](tfx02_deploy_run.ipynb) - This notebook covers building the Docker container image required by
 the TFX pipeline and the AI Platform Training job, compiling the TFX pipeline, and deploying the pipeline to 
 AI Platform Pipelines.
 
 ## Deploying the Embedding Lookup and ScaNN index to AI Platform
 
-After running the solution, a lookup SaveModel and a ScaNN index will be produced.
+After running the solution, an embedding lookup SaveModel and a ScaNN index will be produced.
 To deploy these artifacts to AI Platform as prediction service, you can use the
 [05_deploy_lookup_and scann_caip.ipynb](05_deploy_lookup_and scann_caip.ipynb) notebook, which covers:
 1. Deploying the Embedding Lookup SavedModel to AI Platform Prediction. 
