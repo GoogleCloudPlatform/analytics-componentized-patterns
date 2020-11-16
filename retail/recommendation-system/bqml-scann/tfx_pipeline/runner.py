@@ -69,6 +69,18 @@ if __name__ == '__main__':
       default=0,
       ptype=int
   )
+  
+  eval_min_recall = data_types.RuntimeParameter(
+      name='num-leaves',
+      default=0.8,
+      ptype=float
+  )
+  
+  eval_max_latency = data_types.RuntimeParameter(
+      name='num-leaves',
+      default=0.05,
+      ptype=float
+  )
     
   pipeline_root = f'{config.ARTIFACT_STORE_URI}/{config.PIPELINE_NAME}/{kfp.dsl.RUN_ID_PLACEHOLDER}'
 
@@ -93,6 +105,8 @@ if __name__ == '__main__':
       max_group_size=max_group_size,
       dimensions=dimensions,
       num_leaves=num_leaves,
+      eval_min_recall=eval_min_recall,
+      eval_max_latency=eval_max_latency,
       ai_platform_training_args=ai_platform_training_args,
       beam_pipeline_args=beam_pipeline_args,
       model_regisrty_uri=config.MODEL_REGISTRY_URI)

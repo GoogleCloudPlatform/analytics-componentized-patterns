@@ -28,8 +28,10 @@ from ml_metadata.proto import metadata_store_pb2
 
 try:
   from . import bq_components
+  from . import scann_evaluator
 except:
   import bq_components
+  import scann_evaluator
 
 EMBEDDING_LOOKUP_MODEL_NAME = 'embeddings_lookup'
 SCANN_INDEX_MODEL_NAME = 'embeddings_scann'
@@ -46,6 +48,8 @@ def create_pipeline(pipeline_name: Text,
                     max_group_size: data_types.RuntimeParameter,
                     dimensions: data_types.RuntimeParameter,
                     num_leaves: data_types.RuntimeParameter,
+                    eval_min_recall: data_types.RuntimeParameter,
+                    eval_max_latency: data_types.RuntimeParameter,
                     ai_platform_training_args: Dict[Text, Text],
                     beam_pipeline_args: List[Text],
                     model_regisrty_uri: Text,
@@ -103,20 +107,20 @@ def create_pipeline(pipeline_name: Text,
   schema_importer = tfx.components.ImporterNode(
     source_uri=SCHEMA_DIR,
     artifact_type=tfx.types.standard_artifacts.Schema,
-    instance_name='RawSchemaImporter',
+    instance_name='ImportEmbeddingsSchemaImpor',
   )
   
   # Generate stats for the embeddings for validation.
   stats_generator = tfx.components.StatisticsGen(
     examples=embeddings_exporter.outputs.examples,
-    instance_name='EmbeddingsStatsGenerator',
+    instance_name='GenerateEmbeddingsStats',
   )
 
   # Validate the embeddings stats against the schema.
   stats_validator = tfx.components.ExampleValidator(
     statistics=stats_generator.outputs.statistics,
     schema=schema_importer.outputs.result,
-    instance_name='EmbeddingsStatsValidator',
+    instance_name='ValidateEmbeddingsStats',
   )
 
   # Create an embedding lookup SavedModel.
@@ -133,16 +137,6 @@ def create_pipeline(pipeline_name: Text,
   # Add dependency from stats_validator to lookup_savedmodel_exporter.
   lookup_savedmodel_exporter.add_upstream_node(stats_validator)
 
-  # Push the embedding lookup model to model registry location.
-  embedding_lookup_pusher = tfx.components.Pusher(
-    model=lookup_savedmodel_exporter.outputs.model,
-    push_destination=tfx.proto.pusher_pb2.PushDestination(
-      filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
-        base_directory=os.path.join(model_regisrty_uri, EMBEDDING_LOOKUP_MODEL_NAME))
-    ),
-    instance_name='EmbeddingLookupPusher'
-  )
-
   # Infra-validate the embedding lookup model.
   infra_validator = tfx.components.InfraValidator(
     model=lookup_savedmodel_exporter.outputs.model,
@@ -155,7 +149,18 @@ def create_pipeline(pipeline_name: Text,
       max_loading_time_seconds=60,
       num_tries=3,
     ),
-    instance_name='EmbeddingLookupInfraValidator'
+    instance_name='InfraValidateEmbeddingLookup'
+  )
+
+  # Push the embedding lookup model to model registry location.
+  embedding_lookup_pusher = tfx.components.Pusher(
+    model=lookup_savedmodel_exporter.outputs.model,
+    infra_blessing=infra_validator.outputs.blessing,
+    push_destination=tfx.proto.pusher_pb2.PushDestination(
+      filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
+        base_directory=os.path.join(model_regisrty_uri, EMBEDDING_LOOKUP_MODEL_NAME))
+    ),
+    instance_name='PushEmbeddingLookup'
   )
   
   # Build the ScaNN index.
@@ -170,15 +175,25 @@ def create_pipeline(pipeline_name: Text,
     instance_name='BuildScaNNIndex'
   )
   
-  # Push the ScaNN index to model registry location.
-  embedding_scann_pusher = tfx.components.Pusher(
+  # Evaluate and validate the ScaNN index.
+  index_evaluator = scann_evaluator.IndexEvaluator(
+    examples=embeddings_exporter.outputs.examples,
+    schema=schema_importer.outputs.result,
     model=scann_indexer.outputs.model,
-    infra_blessing=infra_validator.outputs.blessing,
+    min_recall=eval_min_recall,
+    max_latency=eval_max_latency,
+    instance_name='EvaluateScaNNIndex'
+  )
+  
+  # Push the ScaNN index to model registry location.
+  scann_index_pusher = tfx.components.Pusher(
+    model=scann_indexer.outputs.model,
+    model_blessing=index_evaluator.outputs.blessing,
     push_destination=tfx.proto.pusher_pb2.PushDestination(
       filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
         base_directory=os.path.join(model_regisrty_uri, SCANN_INDEX_MODEL_NAME))
     ),
-    instance_name='ScaNNIndexPusher'
+    instance_name='PushScaNNIndex'
   )
   
   components=[
@@ -193,7 +208,8 @@ def create_pipeline(pipeline_name: Text,
     infra_validator,
     embedding_lookup_pusher,
     scann_indexer,
-    embedding_scann_pusher
+    index_evaluator,
+    scann_index_pusher
   ]
   
   print('The pipeline consists of the following components:')
