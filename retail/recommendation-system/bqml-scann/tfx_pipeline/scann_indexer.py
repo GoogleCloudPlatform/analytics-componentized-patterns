@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""ScaNN index builder."""
 
 import os
 import sys
@@ -27,8 +28,8 @@ METRIC = 'dot_product'
 DIMENSIONS_PER_BLOCK = 2
 ANISOTROPIC_QUANTIZATION_THRESHOLD = 0.2
 NUM_NEIGHBOURS = 10
-NUM_LEAVES_TO_SEARCH = 200
-REORDER_NUM_NEIGHBOURS = 200
+NUM_LEAVES_TO_SEARCH = 250
+REORDER_NUM_NEIGHBOURS = 250
 TOKENS_FILE_NAME = 'tokens'
 
 
@@ -40,7 +41,7 @@ def load_embeddings(embedding_files_pattern, schema_file_path):
   logging.info('Loading schema...')
   schema = tfdv.load_schema_text(schema_file_path)
   feature_sepc = schema_utils.schema_as_feature_spec(schema).feature_spec
-  logging.info('Schema is loadded.')
+  logging.info('Schema is loaded.')
 
   def _gzip_reader_fn(filenames):
     return tf.data.TFRecordDataset(filenames, compression_type='GZIP')
@@ -55,7 +56,7 @@ def load_embeddings(embedding_files_pattern, schema_file_path):
   )
 
   # Read embeddings from tfrecord files.
-  logging.info('Loading embeddings from files ...')
+  logging.info('Loading embeddings from files...')
   for tfrecord_batch in dataset:
     vocabulary.append(tfrecord_batch["item_Id"].numpy()[0][0].decode())
     embeddings.append(tfrecord_batch["embedding"].numpy()[0])
@@ -69,6 +70,7 @@ def build_index(embeddings, num_leaves):
   data_size = embeddings.shape[0] 
   if not num_leaves:
     num_leaves = int(math.sqrt(data_size))
+  logging.info(f'Indexing {data_size} embeddings with {num_leaves} leaves.')
     
   logging.info('Start building the ScaNN index...')
   scann_builder = scann.scann_ops.builder(embeddings, NUM_NEIGHBOURS, METRIC).tree(
@@ -77,7 +79,6 @@ def build_index(embeddings, num_leaves):
     training_sample_size=data_size).score_ah(
       DIMENSIONS_PER_BLOCK, anisotropic_quantization_threshold=ANISOTROPIC_QUANTIZATION_THRESHOLD).reorder(REORDER_NUM_NEIGHBOURS)
   scann_index = scann_builder.build()
-  
   logging.info('ScaNN index is built.')
   
   return scann_index
