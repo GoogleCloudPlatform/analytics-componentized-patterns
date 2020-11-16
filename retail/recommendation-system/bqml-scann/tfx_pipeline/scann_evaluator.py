@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""ScaNN index evaluator custom component."""
 
 import os
 import time
@@ -95,7 +96,6 @@ class ScaNNIndexEvaluatorExecutor(base_executor.BaseExecutor):
     
     vocabulary, embeddings = scann_indexer.load_embeddings(
       embedding_files_pattern, schema_file_path)
-    
     
     num_embeddings = embeddings.shape[0]
     logging.info(f'{num_embeddings} embeddings are loaded.')

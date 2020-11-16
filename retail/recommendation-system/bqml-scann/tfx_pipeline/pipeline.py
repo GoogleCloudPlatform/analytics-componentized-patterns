@@ -33,6 +33,7 @@ except:
   import bq_components
   import scann_evaluator
 
+
 EMBEDDING_LOOKUP_MODEL_NAME = 'embeddings_lookup'
 SCANN_INDEX_MODEL_NAME = 'embeddings_scann'
 LOOKUP_EXPORTER_MODULE = 'lookup_exporter.py'
@@ -155,13 +156,19 @@ def create_pipeline(pipeline_name: Text,
   # Push the embedding lookup model to model registry location.
   embedding_lookup_pusher = tfx.components.Pusher(
     model=lookup_savedmodel_exporter.outputs.model,
-    infra_blessing=infra_validator.outputs.blessing,
+    # There is a bug here: https://github.com/tensorflow/tfx/blob/e1669693ef8739323a357d01a7a4801abf052ce4/tfx/components/pusher/executor.py#L103
+    # It should be  infra_blessing.uri instead of model_blessing.uri
+    # Thus setting iinfra_blessing and not model_blessing causes an error.
+    # infra_blessing=infra_validator.outputs.blessing,
     push_destination=tfx.proto.pusher_pb2.PushDestination(
       filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
         base_directory=os.path.join(model_regisrty_uri, EMBEDDING_LOOKUP_MODEL_NAME))
     ),
     instance_name='PushEmbeddingLookup'
   )
+  
+  # Will be removed when the bug is fixed.
+  embedding_lookup_pusher.add_upstream_node(infra_validator)
   
   # Build the ScaNN index.
   scann_indexer = tfx.components.Trainer(

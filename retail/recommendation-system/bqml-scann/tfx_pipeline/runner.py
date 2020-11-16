@@ -71,14 +71,14 @@ if __name__ == '__main__':
   )
   
   eval_min_recall = data_types.RuntimeParameter(
-      name='num-leaves',
+      name='eval-min-recall',
       default=0.8,
       ptype=float
   )
   
   eval_max_latency = data_types.RuntimeParameter(
-      name='num-leaves',
-      default=0.05,
+      name='eval-max-latency',
+      default=0.01,
       ptype=float
   )
     
