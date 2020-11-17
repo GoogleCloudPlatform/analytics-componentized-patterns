@@ -101,7 +101,7 @@ AI Platform Pipelines.
 
 After running the solution, an embedding lookup SaveModel and a ScaNN index will be produced.
 To deploy these artifacts to AI Platform as prediction service, you can use the 
-[05_deploy_lookup_and scann_caip.ipynb](05_deploy_lookup_and scann_caip.ipynb) notebook, which covers:
+[05_deploy_lookup_and scann_caip.ipynb](05_deploy_lookup_and_scann_caip.ipynb) notebook, which covers:
 1. Deploying the Embedding Lookup SavedModel to AI Platform Prediction. 
 2. Deploying the ScaNN index to AI Platform Prediction, using a Custom Container, for real-time similar item matching. 
 
