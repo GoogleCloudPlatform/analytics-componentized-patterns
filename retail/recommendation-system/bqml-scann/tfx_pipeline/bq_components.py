@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""BigQuery components."""
 
 import os
 import warnings
@@ -21,9 +22,13 @@ from google.cloud import bigquery
 import tfx
 import tensorflow as tf
 from tfx.types.experimental.simple_artifacts import Dataset
-from tfx.types.experimental.simple_artifacts import Model as BQModel
+from tfx.types.standard_artifacts import Artifact
 from tfx.dsl.component.experimental.decorators import component
 from tfx.dsl.component.experimental.annotations import InputArtifact, OutputArtifact, Parameter
+
+
+class BQModel(Artifact):
+  TYPE_NAME = 'BQModel'
 
 
 @component
