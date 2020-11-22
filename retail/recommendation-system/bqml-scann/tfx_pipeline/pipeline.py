@@ -69,7 +69,7 @@ def create_pipeline(pipeline_name: Text,
   # Compute the PMI.
   pmi_computer = bq_components.compute_pmi(
     project_id=project_id,
-    dataset=bq_dataset_name,
+    bq_dataset=bq_dataset_name,
     min_item_frequency=min_item_frequency,
     max_group_size=max_group_size
   )
@@ -77,7 +77,7 @@ def create_pipeline(pipeline_name: Text,
   # Train the BQML Matrix Factorization model.
   bqml_trainer = bq_components.train_item_matching_model(
     project_id=project_id,
-    dataset=bq_dataset_name,
+    bq_dataset=bq_dataset_name,
     item_cooc=pmi_computer.outputs.item_cooc,
     dimensions=dimensions,
   )
@@ -85,8 +85,8 @@ def create_pipeline(pipeline_name: Text,
   # Extract the embeddings from the BQML model to a table.
   embeddings_extractor = bq_components.extract_embeddings(
     project_id=project_id,
-    dataset=bq_dataset_name,
-    model=bqml_trainer.outputs.model
+    bq_dataset=bq_dataset_name,
+    bq_model=bqml_trainer.outputs.bq_model
   )
   
   # Export embeddings from BigQuery to Cloud Storage.
