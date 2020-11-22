@@ -36,7 +36,8 @@ class ScaNNMatcher(object):
 
   def match(self, vector, num_matches=10):
     embedding = np.array(vector)
-    matche_indices, _ = self.scann_index.search(embedding, final_num_neighbors=num_matches)
+    query = embedding / np.linalg.norm(embedding)
+    matche_indices, _ = self.scann_index.search(query, final_num_neighbors=num_matches)
     match_tokens = [self.tokens[match_idx] for match_idx in matche_indices.numpy()]
     return match_tokens
 
@@ -51,9 +52,9 @@ class ExactMatcher(object):
 
   def match(self, vector, num_matches=10):
     embedding = np.array(vector)
-    similarities = np.dot(self.embeddings, embedding.T) 
+    query = embedding / np.linalg.norm(embedding)
+    similarities = np.dot(self.embeddings, query.T) 
     matches = list(zip(self.tokens, list(similarities)))
-      
     matches = sorted(
       matches, key=lambda kv: kv[1], reverse=True)[:num_matches]
     return [kv[0] for kv in matches]

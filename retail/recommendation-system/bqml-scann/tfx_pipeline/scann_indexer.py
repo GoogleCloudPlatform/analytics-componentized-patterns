@@ -59,10 +59,13 @@ def load_embeddings(embedding_files_pattern, schema_file_path):
   logging.info('Loading embeddings from files...')
   for tfrecord_batch in dataset:
     vocabulary.append(tfrecord_batch["item_Id"].numpy()[0][0].decode())
-    embeddings.append(tfrecord_batch["embedding"].numpy()[0])
+    embedding = tfrecord_batch["embedding"].numpy()[0]
+    normalized_embedding = embedding / np.linalg.norm(embedding)
+    embeddings.append(normalized_embedding)
   logging.info('Embeddings loaded.')
-    
-  return vocabulary, np.array(embeddings)
+  embeddings = np.array(embeddings)
+  
+  return vocabulary, embeddings
     
     
 def build_index(embeddings, num_leaves):
