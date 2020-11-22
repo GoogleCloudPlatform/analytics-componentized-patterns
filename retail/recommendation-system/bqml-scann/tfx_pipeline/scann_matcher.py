@@ -36,8 +36,7 @@ class ScaNNMatcher(object):
 
   def match(self, vector, num_matches=10):
     embedding = np.array(vector)
-    query = embedding / np.linalg.norm(embedding)
-    matche_indices, _ = self.scann_index.search(query, final_num_neighbors=num_matches)
+    matche_indices, _ = self.scann_index.search(embedding, final_num_neighbors=num_matches)
     match_tokens = [self.tokens[match_idx] for match_idx in matche_indices.numpy()]
     return match_tokens
 

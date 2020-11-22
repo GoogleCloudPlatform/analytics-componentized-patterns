@@ -77,7 +77,8 @@ def build_index(embeddings, num_leaves):
     num_leaves=num_leaves, 
     num_leaves_to_search=NUM_LEAVES_TO_SEARCH, 
     training_sample_size=data_size).score_ah(
-      DIMENSIONS_PER_BLOCK, anisotropic_quantization_threshold=ANISOTROPIC_QUANTIZATION_THRESHOLD).reorder(REORDER_NUM_NEIGHBOURS)
+      DIMENSIONS_PER_BLOCK,
+      anisotropic_quantization_threshold=ANISOTROPIC_QUANTIZATION_THRESHOLD).reorder(REORDER_NUM_NEIGHBOURS)
   scann_index = scann_builder.build()
   logging.info('ScaNN index is built.')
   
