@@ -51,8 +51,7 @@ class ExactMatcher(object):
 
   def match(self, vector, num_matches=10):
     embedding = np.array(vector)
-    query = embedding / np.linalg.norm(embedding)
-    similarities = np.dot(self.embeddings, query.T) 
+    similarities = np.dot(self.embeddings, embedding.T) 
     matches = list(zip(self.tokens, list(similarities)))
       
     matches = sorted(
