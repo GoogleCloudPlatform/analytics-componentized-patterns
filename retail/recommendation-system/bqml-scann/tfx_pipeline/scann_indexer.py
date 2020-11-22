@@ -59,10 +59,13 @@ def load_embeddings(embedding_files_pattern, schema_file_path):
   logging.info('Loading embeddings from files...')
   for tfrecord_batch in dataset:
     vocabulary.append(tfrecord_batch["item_Id"].numpy()[0][0].decode())
-    embeddings.append(tfrecord_batch["embedding"].numpy()[0])
+    embedding = tfrecord_batch["embedding"].numpy()[0]
+    normalized_embedding = embedding / np.linalg.norm(embedding)
+    embeddings.append(normalized_embedding)
   logging.info('Embeddings loaded.')
-    
-  return vocabulary, np.array(embeddings)
+  embeddings = np.array(embeddings)
+  
+  return vocabulary, embeddings
     
     
 def build_index(embeddings, num_leaves):
@@ -77,7 +80,8 @@ def build_index(embeddings, num_leaves):
     num_leaves=num_leaves, 
     num_leaves_to_search=NUM_LEAVES_TO_SEARCH, 
     training_sample_size=data_size).score_ah(
-      DIMENSIONS_PER_BLOCK, anisotropic_quantization_threshold=ANISOTROPIC_QUANTIZATION_THRESHOLD).reorder(REORDER_NUM_NEIGHBOURS)
+      DIMENSIONS_PER_BLOCK,
+      anisotropic_quantization_threshold=ANISOTROPIC_QUANTIZATION_THRESHOLD).reorder(REORDER_NUM_NEIGHBOURS)
   scann_index = scann_builder.build()
   logging.info('ScaNN index is built.')
   

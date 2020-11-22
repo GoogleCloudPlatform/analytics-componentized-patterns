@@ -55,7 +55,6 @@ class ExactMatcher(object):
     query = embedding / np.linalg.norm(embedding)
     similarities = np.dot(self.embeddings, query.T) 
     matches = list(zip(self.tokens, list(similarities)))
-      
     matches = sorted(
       matches, key=lambda kv: kv[1], reverse=True)[:num_matches]
     return [kv[0] for kv in matches]

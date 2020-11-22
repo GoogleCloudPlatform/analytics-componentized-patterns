@@ -32,7 +32,6 @@ def get_query(dataset_name, table_name):
 
 def parse_embeddings(bq_record):
   item_Id = bq_record['item_Id']
-  axis = bq_record['axis']
   factor_weights = bq_record['factor_weights']
   dimensions = len(factor_weights)
   embedding = [0.0] * dimensions

@@ -37,10 +37,10 @@ import tensorflow_data_validation as tfdv
 from tensorflow_transform.tf_metadata import schema_utils
 
 try:
-  from . import scann_matcher
+  from . import item_matcher
   from . import scann_indexer
 except:
-  import scann_matcher
+  import item_matcher
   import scann_indexer
 
   

@@ -34,12 +34,12 @@ class BQModel(Artifact):
 @component
 def compute_pmi(
   project_id: Parameter[str],
-  dataset: Parameter[str],
+  bq_dataset: Parameter[str],
   min_item_frequency: Parameter[int],
   max_group_size: Parameter[int],
   item_cooc: OutputArtifact[Dataset]):
   
-  stored_proc = f'{dataset}.sp_ComputePMI'
+  stored_proc = f'{bq_dataset}.sp_ComputePMI'
   query = f'''
       DECLARE min_item_frequency INT64;
       DECLARE max_group_size INT64;
@@ -57,65 +57,66 @@ def compute_pmi(
   query_job = client.query(query)
   query_job.result() # Wait for the job to complete
   
-  logging.info(f'Items PMI computation completed. Output in {dataset}.{result_table}.')
+  logging.info(f'Items PMI computation completed. Output in {bq_dataset}.{result_table}.')
   
   # Write the location of the output table to metadata.  
-  item_cooc.set_string_custom_property('bq_result_table', f'{dataset}.{result_table}')
+  item_cooc.set_string_custom_property('bq_dataset', bq_dataset)
+  item_cooc.set_string_custom_property('bq_result_table', result_table)
     
     
-
 @component
 def train_item_matching_model(
   project_id: Parameter[str],
-  dataset: Parameter[str],
+  bq_dataset: Parameter[str],
   dimensions: Parameter[int],
   item_cooc: InputArtifact[Dataset],
-  model: OutputArtifact[BQModel]):
+  bq_model: OutputArtifact[BQModel]):
     
   item_cooc_table = item_cooc.get_string_custom_property('bq_result_table')
-  stored_proc = f'{dataset}.sp_TrainItemMatchingModel'
+  stored_proc = f'{bq_dataset}.sp_TrainItemMatchingModel'
   query = f'''
     DECLARE dimensions INT64 DEFAULT {dimensions};
     CALL {stored_proc}(dimensions);
   '''
   model_name = 'item_matching_model'
   
-  logging.info(f'Using item co-occurrence table: {item_cooc_table}')
+  logging.info(f'Using item co-occurrence table: {bq_dataset}.{item_cooc_table}')
   logging.info(f'Starting training of the model...')
     
   client = bigquery.Client(project=project_id)
   query_job = client.query(query)
   query_job.result()
   
-  logging.info(f'Model training completed. Output in {dataset}.{model_name}.')
+  logging.info(f'Model training completed. Output in {bq_dataset}.{model_name}.')
   
   # Write the location of the model to metadata.  
-  model.set_string_custom_property('bq_model_name', f'{dataset}.{model_name}')
+  bq_model.set_string_custom_property('bq_dataset', bq_dataset)
+  bq_model.set_string_custom_property('bq_model_name', model_name)
   
-
   
 @component
 def extract_embeddings(
   project_id: Parameter[str],
-  dataset: Parameter[str],
-  model: InputArtifact[BQModel],
+  bq_dataset: Parameter[str],
+  bq_model: InputArtifact[BQModel],
   item_embeddings: OutputArtifact[Dataset]):
   
-  embedding_model_name = model.get_string_custom_property('bq_model_name')
-  stored_proc = f'{dataset}.sp_ExractEmbeddings'
+  embedding_model_name = bq_model.get_string_custom_property('bq_model_name')
+  stored_proc = f'{bq_dataset}.sp_ExractEmbeddings'
   query = f'''
       CALL {stored_proc}();
   '''
   result_table = 'item_embeddings'
 
-  logging.info(f'Extracting item embedding from: {embedding_model_name}')
+  logging.info(f'Extracting item embedding from: {bq_dataset}.{embedding_model_name}')
   logging.info(f'Starting exporting embeddings...')
   
   client = bigquery.Client(project=project_id)
   query_job = client.query(query)
   query_job.result() # Wait for the job to complete
   
-  logging.info(f'Embeddings export completed. Output in {dataset}.{result_table}')
+  logging.info(f'Embeddings export completed. Output in {bq_dataset}.{result_table}')
   
-  # Write the location of the output table to metadata.  
-  item_embeddings.set_string_custom_property('bq_result_table', f'{dataset}.{result_table}')
+  # Write the location of the output table to metadata.
+  item_embeddings.set_string_custom_property('bq_dataset', bq_dataset)
+  item_embeddings.set_string_custom_property('bq_result_table', result_table)
