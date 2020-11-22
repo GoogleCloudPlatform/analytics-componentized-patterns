@@ -18,7 +18,6 @@ import warnings
 import logging
 
 from google.cloud import bigquery
-from google.cloud.bigquery.model import ModelReference
 
 import tfx
 import tensorflow as tf
