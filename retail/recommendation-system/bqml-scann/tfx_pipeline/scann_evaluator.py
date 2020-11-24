@@ -105,7 +105,7 @@ class ScaNNIndexEvaluatorExecutor(base_executor.BaseExecutor):
     query_embeddings = np.take(embeddings, query_embedding_indices, axis=0)
 
     # Load Exact matcher
-    exact_matcher = scann_matcher.ExactMatcher(embeddings, vocabulary)
+    exact_matcher = item_matcher.ExactMatcher(embeddings, vocabulary)
     exact_matches = []
     logging.info(f'Computing exact matches for the queries...')
     for query in query_embeddings:
@@ -115,7 +115,7 @@ class ScaNNIndexEvaluatorExecutor(base_executor.BaseExecutor):
     
     # Load ScaNN index matcher
     index_artifact = artifact_utils.get_single_instance(input_dict['model'])
-    ann_matcher = scann_matcher.ScaNNMatcher(index_artifact.uri + '/serving_model_dir')
+    ann_matcher = item_matcher.ScaNNMatcher(index_artifact.uri + '/serving_model_dir')
     scann_matches = []
     logging.info(f'Computing ScaNN matches for the queries...')
     start_time = time.time()

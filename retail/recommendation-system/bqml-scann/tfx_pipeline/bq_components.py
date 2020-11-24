@@ -26,9 +26,7 @@ from tfx.types.standard_artifacts import Artifact
 from tfx.dsl.component.experimental.decorators import component
 from tfx.dsl.component.experimental.annotations import InputArtifact, OutputArtifact, Parameter
 
-
-class BQModel(Artifact):
-  TYPE_NAME = 'BQModel'
+from tfx.types.standard_artifacts import Model as BQModel
 
 
 @component

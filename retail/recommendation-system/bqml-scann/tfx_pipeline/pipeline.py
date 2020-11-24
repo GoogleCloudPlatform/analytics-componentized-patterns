@@ -92,7 +92,7 @@ def create_pipeline(pipeline_name: Text,
   # Export embeddings from BigQuery to Cloud Storage.
   embeddings_exporter = BigQueryExampleGen(
     query=f'''
-      SELECT item_Id, embedding
+      SELECT item_Id, embedding, bias,
       FROM {bq_dataset_name}.item_embeddings
     ''',
     output_config=example_gen_pb2.Output(
@@ -128,8 +128,8 @@ def create_pipeline(pipeline_name: Text,
   lookup_savedmodel_exporter = tfx.components.Trainer(
     custom_executor_spec=local_executor_spec,
     module_file=LOOKUP_EXPORTER_MODULE,
-    train_args={'num_steps': 0},
-    eval_args={'num_steps': 0},
+    train_args={'splits': ['train'], 'num_steps': 0},
+    eval_args={'splits': ['train'], 'num_steps': 0},
     schema=schema_importer.outputs.result,
     examples=embeddings_exporter.outputs.examples,
     instance_name='ExportEmbeddingLookup'
@@ -172,15 +172,19 @@ def create_pipeline(pipeline_name: Text,
   
   # Build the ScaNN index.
   scann_indexer = tfx.components.Trainer(
-    custom_executor_spec=caip_executor_spec if ai_platform_training_args else local_executor_spec,
+    #custom_executor_spec=caip_executor_spec if ai_platform_training_args else local_executor_spec,
+    custom_executor_spec=local_executor_spec,
     module_file=SCANN_INDEXER_MODULE,
-    train_args={'num_steps': num_leaves},
-    eval_args={'num_steps': 0},
+    train_args={'splits': ['train'], 'num_steps': num_leaves},
+    eval_args={'splits': ['train'], 'num_steps': 0},
     schema=schema_importer.outputs.result,
     examples=embeddings_exporter.outputs.examples,
     custom_config={'ai_platform_training_args': ai_platform_training_args},
     instance_name='BuildScaNNIndex'
   )
+  
+  # Add dependency from stats_validator to scann_indexer.
+  scann_indexer.add_upstream_node(stats_validator)
   
   # Evaluate and validate the ScaNN index.
   index_evaluator = scann_evaluator.IndexEvaluator(
