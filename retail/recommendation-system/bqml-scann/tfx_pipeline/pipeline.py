@@ -183,6 +183,9 @@ def create_pipeline(pipeline_name: Text,
     instance_name='BuildScaNNIndex'
   )
   
+  # Add dependency from stats_validator to scann_indexer.
+  scann_indexer.add_upstream_node(stats_validator)
+  
   # Evaluate and validate the ScaNN index.
   index_evaluator = scann_evaluator.IndexEvaluator(
     examples=embeddings_exporter.outputs.examples,
