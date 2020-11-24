@@ -92,7 +92,7 @@ def create_pipeline(pipeline_name: Text,
   # Export embeddings from BigQuery to Cloud Storage.
   embeddings_exporter = BigQueryExampleGen(
     query=f'''
-      SELECT item_Id, embedding
+      SELECT item_Id, embedding, bias,
       FROM {bq_dataset_name}.item_embeddings
     ''',
     output_config=example_gen_pb2.Output(
@@ -172,7 +172,8 @@ def create_pipeline(pipeline_name: Text,
   
   # Build the ScaNN index.
   scann_indexer = tfx.components.Trainer(
-    custom_executor_spec=caip_executor_spec if ai_platform_training_args else local_executor_spec,
+    #custom_executor_spec=caip_executor_spec if ai_platform_training_args else local_executor_spec,
+    custom_executor_spec=local_executor_spec,
     module_file=SCANN_INDEXER_MODULE,
     train_args={'num_steps': num_leaves},
     eval_args={'num_steps': 0},
