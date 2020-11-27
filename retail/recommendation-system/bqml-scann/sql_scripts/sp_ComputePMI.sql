@@ -70,13 +70,16 @@ BEGIN
   
   ###################################
   
-  # Add same item frequency as cooc
+  # Add mirror item-pair cooc and same item frequency as cooc
   CREATE OR REPLACE TABLE @DATASET_NAME.item_cooc
   AS
-  SELECT item1_Id, item2_Id, cooc 
+  SELECT item1_Id, item2_Id, cooc
   FROM @DATASET_NAME.item_cooc
   UNION ALL
-  SELECT item_Id as item1_Id, item_Id AS item2_Id, frequency as item_cooc
+  SELECT item2_Id as item1_Id, item1_Id AS item2_Id, cooc
+  FROM @DATASET_NAME.item_cooc
+  UNION ALL
+  SELECT item_Id as item1_Id, item_Id AS item2_Id, frequency as cooc
   FROM @DATASET_NAME.item_frequency;
 
   ###################################
