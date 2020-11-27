@@ -5,7 +5,7 @@ for real-time similarity matching. The system utilizes [BigQuery ML Matrix Facto
 model to train the embeddings, and the open-source [ScaNN framework](https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html) to build and
 approximate nearest neighbour index.
 
-1. Compute pointwise mutual information (PMI) between items based on their cooccurrences.
+1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
 2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
 3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
 4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
@@ -16,9 +16,8 @@ approximate nearest neighbour index.
 ## Tutorial Dataset
 
 We use the public `bigquery-samples.playlists` BigQuery dataset to demonstrate
-the solutions. We use the playlist data to learn embeddings for songs based on their cooccurrences
-in different playlist. The learnt embeddings can be used to match and recommend relevant songs.
-to a given song or playlist.
+the solutions. We use the playlist data to learn embeddings for songs based on their co-occurrences
+in different playlists. The learnt embeddings can be used to match and recommend relevant songs to a given song or playlist.
 
 ## Before you begin
 
@@ -32,7 +31,7 @@ Complete the following steps to set up your GCP environment:
 5. Create or have access to an existing [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
 6. Create a [Datastore database instance](https://cloud.google.com/datastore/docs/quickstart)  with Firestore in Datastore Mode.
 7. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.3 runtime.
-8. [Deploy AI Platform Pipelines](https://cloud.google.com/ai-platform/pipelines/docs/setting-up) to run the TFX pipeline.
+8. [Create AI Platform Pipelines](https://cloud.google.com/ai-platform/pipelines/docs/setting-up) to run the TFX pipeline.
 
 To go through the tasks for running the solution, you need to open the JupyterLab environment in the AI Notebook and clone the repository:
 1. In the AI Platform Notebook list, click Open Jupyterlab. This opens the JupyterLab environment in your browser.
@@ -55,7 +54,7 @@ and the steps of the solution:
 This is a prerequisite notebook that covers:
    1. Copying the `bigquery-samples.playlists.playlist` table to your BigQuery dataset.
    2. Exporting the songs information to Datastore so that you can lookup the information of a given song in real-time.
-2. [00_prep_bq_procedures](00_prep_bq_procedures.ipynb) - This is a prerequisite notebook that covers creating the BigQuery 
+2. [00_prep_bq_procedures.ipynb](00_prep_bq_procedures.ipynb) - This is a prerequisite notebook that covers creating the BigQuery 
 stored procedures executed by the solution.
 
 **Running the solution**
