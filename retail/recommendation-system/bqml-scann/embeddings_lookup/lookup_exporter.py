@@ -17,6 +17,8 @@ import tensorflow as tf
 import numpy as np
 
 VOCABULARY_FILE_NAME = 'vocabulary.txt'
+
+
 class EmbeddingLookup(tf.keras.Model):
 
   def __init__(self, embedding_files_prefix, **kwargs):
@@ -26,7 +28,7 @@ class EmbeddingLookup(tf.keras.Model):
     embeddings = list()
 
     # Read embeddings from csv files.
-    print('Loading embeddings from files ...')
+    print('Loading embeddings from files...')
     for embedding_file in tf.io.gfile.glob(embedding_files_prefix):
       print(f'Loading embeddings in {embedding_file} ...')
       with tf.io.gfile.GFile(embedding_file, 'r') as lines:
@@ -38,15 +40,15 @@ class EmbeddingLookup(tf.keras.Model):
             vocabulary.append(item)
             embeddings.append(embedding)
           except: pass
-
     print('Embeddings loaded.')
+    
     embedding_size = len(embeddings[0])
     oov_embedding = np.zeros((1, embedding_size))
     self.embeddings = np.append(np.array(embeddings), oov_embedding, axis=0)
     print(f'Embeddings: {self.embeddings.shape}')
 
-    # Write vocabualry file.
-    print('Writing vocabulary to file ...')
+    # Write vocabulary file.
+    print('Writing vocabulary to file...')
     with open(VOCABULARY_FILE_NAME, 'w') as f:
       for item in vocabulary: 
         f.write(f'{item}\n')
