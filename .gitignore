@@ -2,3 +2,6 @@
 .DS_Store
 .vscode/
 **/*.cpython-37..pyc
+**/*.sqllite
+**/*.tar.gz
+retail/recommendation-system/bqml-scann/vocabulary.txt
