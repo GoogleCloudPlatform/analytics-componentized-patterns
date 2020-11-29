@@ -60,13 +60,16 @@ def build_index(embeddings, num_leaves):
     num_leaves = int(math.sqrt(data_size))
     
   print('Start building the ScaNN index...')
-  scann_builder = scann.scann_ops.builder(embeddings, NUM_NEIGHBOURS, METRIC).tree(
+  scann_builder = scann.scann_ops.builder(embeddings, NUM_NEIGHBOURS, METRIC)
+  scann_builder = scann_builder.tree(
     num_leaves=num_leaves, 
     num_leaves_to_search=NUM_LEAVES_TO_SEARCH, 
-    training_sample_size=data_size).score_ah(
-      DIMENSIONS_PER_BLOCK, anisotropic_quantization_threshold=ANISOTROPIC_QUANTIZATION_THRESHOLD).reorder(REORDER_NUM_NEIGHBOURS)
+    training_sample_size=data_size)
+  scann_builder = scann_builder.score_ah(
+    DIMENSIONS_PER_BLOCK, 
+    anisotropic_quantization_threshold=ANISOTROPIC_QUANTIZATION_THRESHOLD)
+  scann_builder = scann_builder.reorder(REORDER_NUM_NEIGHBOURS)
   scann_index = scann_builder.build()
-  
   print('ScaNN index is built.')
   
   return scann_index
