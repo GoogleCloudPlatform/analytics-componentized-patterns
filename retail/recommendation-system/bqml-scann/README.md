@@ -40,6 +40,13 @@ To go through the tasks for running the solution, you need to open the JupyterLa
 
    ```git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git```
 
+4. Install the required libraries:
+
+  ```
+    cd analytics-componentized-patterns/retail/recommendation-system/bqml-scann
+    pip install -r requirements.txt
+  ```
+
 When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
 
 
