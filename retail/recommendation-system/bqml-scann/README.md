@@ -38,7 +38,14 @@ To go through the tasks for running the solution, you need to open the JupyterLa
 2. To launch a terminal tab, click the Terminal icon from the Launcher menu.
 3. In the terminal, clone the `analytics-componentized-patterns` repository:
 
-   ```git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git```
+    ```git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git```
+   
+4. Install the required libraries:
+
+    ```
+    cd analytics-componentized-patterns/retail/recommendation-system/bqml-scann
+    pip install -r requirements.txt
+    ```
 
 When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
 
@@ -59,7 +66,7 @@ stored procedures executed by the solution.
 
 **Running the solution**
 
-1. [01_train_bqml_mf_pmi.ipynb](01_train_bqml_mf_pmi.ipynb) - This notebook covers computing pairwise item cooccurrences
+1. [01_train_bqml_mf_pmi.ipynb](01_train_bqml_mf_pmi.ipynb) - This notebook covers computing pairwise item co-occurrences
 to train the the BigQuery ML Matrix Factorization model, and generate embeddings for the items.
 2. [02_export_bqml_mf_embeddings.ipynb](02_export_bqml_mf_embeddings.ipynb) - 
 This notebook covers exporting the trained embeddings from the Matrix Factorization BigQuery ML Model to Cloud Storage,
@@ -100,7 +107,7 @@ AI Platform Pipelines.
 
 After running the solution, an embedding lookup SaveModel and a ScaNN index will be produced.
 To deploy these artifacts to AI Platform as prediction service, you can use the 
-[05_deploy_lookup_and scann_caip.ipynb](05_deploy_lookup_and_scann_caip.ipynb) notebook, which covers:
+[05_deploy_lookup_and_scann_caip.ipynb](05_deploy_lookup_and_scann_caip.ipynb) notebook, which covers:
 1. Deploying the Embedding Lookup SavedModel to AI Platform Prediction. 
 2. Deploying the ScaNN index to AI Platform Prediction, using a Custom Container, for real-time similar item matching. 
 
