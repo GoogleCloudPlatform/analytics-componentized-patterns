@@ -204,7 +204,7 @@ def create_pipeline(pipeline_name: Text,
       filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
         base_directory=os.path.join(model_regisrty_uri, SCANN_INDEX_MODEL_NAME))
     ),
-    instance_name='PushScaNNIndex'embedding_lookup_creator
+    instance_name='PushScaNNIndex'
   )
   
   components=[
