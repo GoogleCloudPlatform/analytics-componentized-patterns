@@ -36,7 +36,7 @@ except:
 
 EMBEDDING_LOOKUP_MODEL_NAME = 'embeddings_lookup'
 SCANN_INDEX_MODEL_NAME = 'embeddings_scann'
-LOOKUP_EXPORTER_MODULE = 'lookup_exporter.py'
+LOOKUP_CREATOR_MODULE = 'lookup_creator.py'
 SCANN_INDEXER_MODULE = 'scann_indexer.py'
 SCHEMA_DIR = 'schema'
 
@@ -125,9 +125,9 @@ def create_pipeline(pipeline_name: Text,
   )
 
   # Create an embedding lookup SavedModel.
-  lookup_savedmodel_exporter = tfx.components.Trainer(
+  embedding_lookup_creator = tfx.components.Trainer(
     custom_executor_spec=local_executor_spec,
-    module_file=LOOKUP_EXPORTER_MODULE,
+    module_file=LOOKUP_CREATOR_MODULE,
     train_args={'splits': ['train'], 'num_steps': 0},
     eval_args={'splits': ['train'], 'num_steps': 0},
     schema=schema_importer.outputs.result,
@@ -135,12 +135,12 @@ def create_pipeline(pipeline_name: Text,
     instance_name='ExportEmbeddingLookup'
   )
   
-  # Add dependency from stats_validator to lookup_savedmodel_exporter.
-  lookup_savedmodel_exporter.add_upstream_node(stats_validator)
+  # Add dependency from stats_validator to embedding_lookup_creator.
+  embedding_lookup_creator.add_upstream_node(stats_validator)
 
   # Infra-validate the embedding lookup model.
   infra_validator = tfx.components.InfraValidator(
-    model=lookup_savedmodel_exporter.outputs.model,
+    model=embedding_lookup_creator.outputs.model,
     serving_spec=infra_validator_pb2.ServingSpec(
       tensorflow_serving=infra_validator_pb2.TensorFlowServing(
         tags=['latest']),
@@ -155,7 +155,7 @@ def create_pipeline(pipeline_name: Text,
 
   # Push the embedding lookup model to model registry location.
   embedding_lookup_pusher = tfx.components.Pusher(
-    model=lookup_savedmodel_exporter.outputs.model,
+    model=embedding_lookup_creator.outputs.model,
     # There is a bug here: https://github.com/tensorflow/tfx/blob/e1669693ef8739323a357d01a7a4801abf052ce4/tfx/components/pusher/executor.py#L103
     # It should be  infra_blessing.uri instead of model_blessing.uri
     # Thus setting iinfra_blessing and not model_blessing causes an error.
@@ -204,7 +204,7 @@ def create_pipeline(pipeline_name: Text,
       filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
         base_directory=os.path.join(model_regisrty_uri, SCANN_INDEX_MODEL_NAME))
     ),
-    instance_name='PushScaNNIndex'
+    instance_name='PushScaNNIndex'embedding_lookup_creator
   )
   
   components=[
@@ -215,7 +215,7 @@ def create_pipeline(pipeline_name: Text,
     schema_importer,
     stats_generator,
     stats_validator,
-    lookup_savedmodel_exporter,
+    embedding_lookup_creator,
     infra_validator,
     embedding_lookup_pusher,
     scann_indexer,
