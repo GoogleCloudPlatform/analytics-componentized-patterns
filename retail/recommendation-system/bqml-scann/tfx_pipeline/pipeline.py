@@ -97,8 +97,7 @@ def create_pipeline(pipeline_name: Text,
     ''',
     output_config=example_gen_pb2.Output(
       split_config=example_gen_pb2.SplitConfig(splits=[
-        example_gen_pb2.SplitConfig.Split(name='train', hash_buckets=1)])),
-    instance_name='BQExportEmbeddings'
+        example_gen_pb2.SplitConfig.Split(name='train', hash_buckets=1)]))
   )
   
   # Add dependency from embeddings_exporter to embeddings_extractor.
@@ -108,20 +107,18 @@ def create_pipeline(pipeline_name: Text,
   schema_importer = tfx.components.ImporterNode(
     source_uri=SCHEMA_DIR,
     artifact_type=tfx.types.standard_artifacts.Schema,
-    instance_name='ImportEmbeddingsSchemaImpor',
+    instance_name='ImportSchema',
   )
   
   # Generate stats for the embeddings for validation.
   stats_generator = tfx.components.StatisticsGen(
     examples=embeddings_exporter.outputs.examples,
-    instance_name='GenerateEmbeddingsStats',
   )
 
   # Validate the embeddings stats against the schema.
   stats_validator = tfx.components.ExampleValidator(
     statistics=stats_generator.outputs.statistics,
     schema=schema_importer.outputs.result,
-    instance_name='ValidateEmbeddingsStats',
   )
 
   # Create an embedding lookup SavedModel.
@@ -131,9 +128,9 @@ def create_pipeline(pipeline_name: Text,
     train_args={'splits': ['train'], 'num_steps': 0},
     eval_args={'splits': ['train'], 'num_steps': 0},
     schema=schema_importer.outputs.result,
-    examples=embeddings_exporter.outputs.examples,
-    instance_name='ExportEmbeddingLookup'
+    examples=embeddings_exporter.outputs.examples
   )
+  embedding_lookup_creator.id = 'CreateEmbeddingLookup'
   
   # Add dependency from stats_validator to embedding_lookup_creator.
   embedding_lookup_creator.add_upstream_node(stats_validator)
@@ -149,8 +146,7 @@ def create_pipeline(pipeline_name: Text,
     validation_spec=infra_validator_pb2.ValidationSpec(
       max_loading_time_seconds=60,
       num_tries=3,
-    ),
-    instance_name='InfraValidateEmbeddingLookup'
+    )
   )
 
   # Push the embedding lookup model to model registry location.
@@ -160,9 +156,9 @@ def create_pipeline(pipeline_name: Text,
     push_destination=tfx.proto.pusher_pb2.PushDestination(
       filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
         base_directory=os.path.join(model_regisrty_uri, EMBEDDING_LOOKUP_MODEL_NAME))
-    ),
-    instance_name='PushEmbeddingLookup'
+    )
   )
+  embedding_lookup_pusher.id = 'PushEmbeddingLookup'
   
   # Build the ScaNN index.
   scann_indexer = tfx.components.Trainer(
@@ -172,9 +168,9 @@ def create_pipeline(pipeline_name: Text,
     eval_args={'splits': ['train'], 'num_steps': 0},
     schema=schema_importer.outputs.result,
     examples=embeddings_exporter.outputs.examples,
-    custom_config={'ai_platform_training_args': ai_platform_training_args},
-    instance_name='BuildScaNNIndex'
+    custom_config={'ai_platform_training_args': ai_platform_training_args}
   )
+  scann_indexer.id = 'BuildScaNNIndex'
   
   # Add dependency from stats_validator to scann_indexer.
   scann_indexer.add_upstream_node(stats_validator)
@@ -185,8 +181,7 @@ def create_pipeline(pipeline_name: Text,
     schema=schema_importer.outputs.result,
     model=scann_indexer.outputs.model,
     min_recall=eval_min_recall,
-    max_latency=eval_max_latency,
-    instance_name='EvaluateScaNNIndex'
+    max_latency=eval_max_latency
   )
   
   # Push the ScaNN index to model registry location.
@@ -196,9 +191,9 @@ def create_pipeline(pipeline_name: Text,
     push_destination=tfx.proto.pusher_pb2.PushDestination(
       filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
         base_directory=os.path.join(model_regisrty_uri, SCANN_INDEX_MODEL_NAME))
-    ),
-    instance_name='PushScaNNIndex'
+    )
   )
+  scann_index_pusher.id = 'PushScaNNIndex'
   
   components=[
     pmi_computer,
