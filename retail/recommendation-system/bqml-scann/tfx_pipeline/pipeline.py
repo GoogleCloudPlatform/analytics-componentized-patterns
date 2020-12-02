@@ -20,7 +20,7 @@ from kfp import gcp
 import tfx
 from tfx.proto import example_gen_pb2, infra_validator_pb2
 from tfx.orchestration import pipeline, data_types
-from tfx.components.base import executor_spec
+from tfx.dsl.components.base import executor_spec
 from tfx.components.trainer import executor as trainer_executor
 from tfx.extensions.google_cloud_ai_platform.trainer import executor as ai_platform_trainer_executor
 from tfx.extensions.google_cloud_big_query.example_gen.component import BigQueryExampleGen
@@ -156,10 +156,7 @@ def create_pipeline(pipeline_name: Text,
   # Push the embedding lookup model to model registry location.
   embedding_lookup_pusher = tfx.components.Pusher(
     model=embedding_lookup_creator.outputs.model,
-    # There is a bug here: https://github.com/tensorflow/tfx/blob/e1669693ef8739323a357d01a7a4801abf052ce4/tfx/components/pusher/executor.py#L103
-    # It should be  infra_blessing.uri instead of model_blessing.uri
-    # Thus setting iinfra_blessing and not model_blessing causes an error.
-    # infra_blessing=infra_validator.outputs.blessing,
+    infra_blessing=infra_validator.outputs.blessing,
     push_destination=tfx.proto.pusher_pb2.PushDestination(
       filesystem=tfx.proto.pusher_pb2.PushDestination.Filesystem(
         base_directory=os.path.join(model_regisrty_uri, EMBEDDING_LOOKUP_MODEL_NAME))
@@ -167,13 +164,9 @@ def create_pipeline(pipeline_name: Text,
     instance_name='PushEmbeddingLookup'
   )
   
-  # Will be removed when the bug is fixed.
-  embedding_lookup_pusher.add_upstream_node(infra_validator)
-  
   # Build the ScaNN index.
   scann_indexer = tfx.components.Trainer(
-    #custom_executor_spec=caip_executor_spec if ai_platform_training_args else local_executor_spec,
-    custom_executor_spec=local_executor_spec,
+    custom_executor_spec=caip_executor_spec if ai_platform_training_args else local_executor_spec,
     module_file=SCANN_INDEXER_MODULE,
     train_args={'splits': ['train'], 'num_steps': num_leaves},
     eval_args={'splits': ['train'], 'num_steps': 0},
