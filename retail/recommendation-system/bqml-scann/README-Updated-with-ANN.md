@@ -24,8 +24,7 @@ After the item embeddings have been created and exported to the BigQuery table, 
 Or the following tasks for the second variant:
 
 7. Create an ANN index
-8. Create an ANN index endpoint
-9. Deploy the index to the endpoint
+8. Deploy the index to the ANN endpoint
 
 The following diagram summarizes the workflow to implement the first variant:
 
