@@ -33,7 +33,7 @@ The following diagram summarizes the workflow to implement the first variant:
 
 And for the second variant:
 
-![Workflow Ann](figures/diagram-ann.png)
+![Workflow Ann](figures/ann-flow.png)
 
 
 In addition to a manual step by step walk through of the system implementation tasks, we provide two examples of how to automate the implementation using TFX and AI Platform Pipelines.
