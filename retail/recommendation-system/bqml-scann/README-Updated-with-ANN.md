@@ -1,6 +1,6 @@
 # Low latency item-to-item recommendation system
 
-This directory contains code samples that demonstrate how to implement a low latency item-to-item recommendation solution. The foundation of the solution are BigQuery and [ScaNN](https://github.com/google-research/google-research/tree/master/scann) - an open source library for efficient vector similarity search at scale.
+This directory contains code samples that demonstrate how to implement a low latency item-to-item recommendation solution. The foundation of the solution are [BigQuery](https://cloud.google.com/bigquery) and [ScaNN](https://github.com/google-research/google-research/tree/master/scann) - an open source library for efficient vector similarity search at scale.
 
 There are two variants of the solution:
 1. The first one utilizes the open source ScaNN library directly
