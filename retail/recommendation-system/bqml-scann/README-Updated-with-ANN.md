@@ -7,7 +7,7 @@ There are two variants of the solution:
 2. The second one leverages the AI Platform ANN Service, which is a GCP managed service (in the Experimental stage) built on top of the ScaNN library.
 
 In both variants, [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
-model is used to train item embeddings, which are then used to create and deploy a scalable and high performance approximate nearest neighbors index. In the first variant, the index is built using the ScaNN library and deployed as an online service using AI Platform Prediction. In the second variant, the managed ANN service is used to create and deploy the index.
+model is used to train item embeddings, which are then used to create and deploy a scalable and high performance approximate nearest neighbors search index. In the first variant, the index is built using the ScaNN library and deployed as an online service using AI Platform Prediction. In the second variant, the managed ANN service is used to create and deploy the index.
 
 The prescriptive guidance for implementing the systems has been structured as series of tasks. The first three tasks that describe the process of creating item embeddings are the same for both variants. 
 
