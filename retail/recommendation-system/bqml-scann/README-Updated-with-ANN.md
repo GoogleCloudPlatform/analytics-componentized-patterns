@@ -113,7 +113,7 @@ When the command finishes, navigate to the `analytics-componentized-patterns/ret
 
 ### Additional setup required when using ANN Service 
 
-While AI Platform ANN Service is in the Experimental stage your project must be allow-listed before using the service. Contact `gcp-ann-feedback@` to allow list your project and user id.
+While AI Platform ANN Service is in the Experimental stage your project and user IDs must be allow-listed before using the service. Contact your Google representative for more information.
 
 #### Enabling the Cloud APIs required by the ANN Service
 
@@ -165,7 +165,7 @@ gcloud services vpc-peerings connect \
 
 ### Additional setup required when using AI Platform (Unified) Pipelines
 
-
+While AI Platform (Unified) Pipelines is in the Experimental stage, your project and user IDs must be allow-listed before using the service. Contact your Google representative for more information.
 
 ## Using the Jupyter notebooks
 
