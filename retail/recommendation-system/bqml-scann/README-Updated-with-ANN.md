@@ -140,7 +140,7 @@ to train the the BigQuery ML Matrix Factorization model, and generate embeddings
 2. [02_export_bqml_mf_embeddings.ipynb](02_export_bqml_mf_embeddings.ipynb) - 
 This notebook covers extracting the trained embeddings from the Matrix Factorization BigQuery ML Model to a BigQuery table and exporting them to Cloud Storage.
 
-**Creating and deploying an approximate nearest neighbor index using ScaNN library and AI Platform Prediction.
+**Creating and deploying an approximate nearest neighbor index using ScaNN library and AI Platform Prediction**
 1. [03_create_embedding_lookup_model.ipynb](03_create_embedding_lookup_model.ipynb) - 
 This notebook covers wrapping the item embeddings in a Keras model and exporting it
 as a SavedModel, to act as an item-embedding lookup.
@@ -150,7 +150,7 @@ using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cl
 3. [05_deploy_lookup_and_scann_caip.ipynb](05_deploy_lookup_and_scann_caip.ipynb) -
 This noteoobk covers deploying the Embedding Lookup SavedModel and the ScaNN index to AI Platform Prediction.
 
-**Creating and deploying an approximate nearest neighbor index using AI Platform ANN Service 
+**Creating and deploying an approximate nearest neighbor index using AI Platform ANN Service**
 1. [ann-01-create-index.ipynb](ann-01-create-index.ipynb) -
 This notebook walks you through creating an ANN index, creating an ANN endpoint, and deploying the index to the endpoint. It also shows how to call the interfaces exposed by the deployed index.
 
