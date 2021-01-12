@@ -1,15 +1,15 @@
 # Low latency item-to-item recommendation system
 
-This directory contains code samples that demonstrate how to implement a low latency item-to-item recommendation system. The foundation of the system are BigQuery and [ScaNN](https://github.com/google-research/google-research/tree/master/scann) - an open source library for efficient vector similarity search at scale.
+This directory contains code samples that demonstrate how to implement a low latency item-to-item recommendation solution. The foundation of the solution are BigQuery and [ScaNN](https://github.com/google-research/google-research/tree/master/scann) - an open source library for efficient vector similarity search at scale.
 
-There are two variants of the system:
-1. The first one utilizes the ScaNN library directly
+There are two variants of the solution:
+1. The first one utilizes the open source ScaNN library directly
 2. The second one leverages the AI Platform ANN Service, which is a GCP managed service (in the Experimental stage) built on top of the ScaNN library.
 
 In both variants, [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
-model is used to train item embeddings, which are then used to create and deploy a scalable and high performance approximate nearest neighbors index. In the first variant, the index is built using the ScaNN library and deployed as an online service using AI Platform Prediction. In the second variant, the managed ANN service is used to create the index and the index deployment.
+model is used to train item embeddings, which are then used to create and deploy a scalable and high performance approximate nearest neighbors index. In the first variant, the index is built using the ScaNN library and deployed as an online service using AI Platform Prediction. In the second variant, the managed ANN service is used to create and deploy the index.
 
-The prescriptive guidance for building the systems has been divided into a series of tasks. The first three tasks that describe the process of creating item embeddings are the same for both variants. 
+The prescriptive guidance for implementing the systems has been structured as series of tasks. The first three tasks that describe the process of creating item embeddings are the same for both variants. 
 
 1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
 2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
@@ -36,11 +36,10 @@ And for the second variant:
 ![Workflow Ann](figures/ann-flow.png)
 
 
-In addition to a manual step by step walk through of the system implementation tasks, we provide two examples of how to automate the implementation using TFX and AI Platform Pipelines.
+In addition to a manual step by step walk through of the system implementation tasks, we provide two examples of how to automate the process using TFX and AI Platform Pipelines:
 
-The first example is based on [AI Platform Pipelines Beta](https://cloud.google.com/ai-platform/pipelines/docs) and uses open source Kubeflow Pipelines runtime as an execution engine. 
-
-The second example is based on AI Platform (Unified) Pipelines and uses the upcoming managed execution engine and managed AI Platform ML Metadata.
+1. The first example is based on [AI Platform Pipelines Beta](https://cloud.google.com/ai-platform/pipelines/docs) and uses open source Kubeflow Pipelines runtime as an execution engine. 
+2. The second example is based on AI Platform (Unified) Pipelines and uses the upcoming managed execution engine and managed AI Platform ML Metadata.
 
 
 The [TFX pipeline](tfx_pipeline) used in the first example orchestrates the below workflow:
