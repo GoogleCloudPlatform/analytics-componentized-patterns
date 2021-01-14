@@ -7,7 +7,19 @@ There are two variants of the solution:
 2. The second one is a fully managed solution that leverages the experimental releases of AI Platform Pipelines and AI Platform ANN service.
 
 
-## ScaNN and OSS Kubeflow Pipelines based solution architecture overview
+## ScaNN and OSS Kubeflow Pipelines based solution 
+
+The system utilizes [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
+model to train the embeddings, and the open-source [ScaNN framework](https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html) to build and
+approximate nearest neighbour index.
+
+1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
+2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
+3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
+4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
+5. Serve the embedding as an approximate nearest neighbor index using ScaNN on AI Platform Prediction for real-time similar items matching.
+
+![Workflow](figures/diagram.png)
 
 ## Tutorial Dataset
 
@@ -44,7 +56,6 @@ To go through the tasks for running the solution, you need to open the JupyterLa
     ```
 
 When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
-
 
 ## Using the Notebooks to Run the Solution
 
@@ -112,6 +123,7 @@ The ScaNN matching service works as follows:
 2. Looks up the embedding of the query item Id from Embedding Lookup Model in AI Platform Prediction.
 3. Uses the ScaNN index to find similar item Ids for the given query item embedding.
 4. Returns a list of the similar item Ids to the query item Id.
+
 
 
 ## AI Platform (Unified) Pipelines and ANN service based solution architecture overview
