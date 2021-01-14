@@ -164,7 +164,7 @@ All steps and their inputs and outputs are tracked in the AI Platform (Unified) 
 
 ### Setting up the environment
 
-To use AI Platform Pipelines and ANN services are in the Experimental stage you need to allow-list you project and user account.
+To use the Experimental releases of AI Platform Pipelines and ANN services you need to allow-list you project and user account.
 
 Please contact your Google representative for more information and support.
 
