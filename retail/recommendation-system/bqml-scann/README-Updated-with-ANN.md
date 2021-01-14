@@ -7,7 +7,7 @@ There are two variants of the solution:
 2. The second one is a fully managed solution that leverages the experimental releases of AI Platform Pipelines and AI Platform ANN service.
 
 
-## ScaNN and Kubeflow Pipelines based solution architecture overview
+## ScaNN and OSS Kubeflow Pipelines based solution architecture overview
 
 
 The system utilizes [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
