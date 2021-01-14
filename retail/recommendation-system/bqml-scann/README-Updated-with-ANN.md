@@ -7,29 +7,33 @@ There are two variants of the solution:
 2. The second one is a fully managed solution that leverages the experimental releases of AI Platform Pipelines and AI Platform ANN service.
 
 
-## Architecture overview
+## ScaNN and Kubeflow Pipelines based solution architecture overview
 
-In both variants, [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
-model is used to train item embeddings, which are then used to create and deploy a scalable and high performance approximate nearest neighbors search index and deploy it as an online service. In the first variant, the index is built using the ScaNN library and deployed using AI Platform Prediction. In the second variant, the managed ANN service is used to both create and deploy the index.
 
-The prescriptive guidance for implementing the systems has been structured as series of tasks. The first three tasks that describe the process of creating item embeddings are the same for both variants. 
+The system utilizes [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
+model to train the embeddings, and the open-source [ScaNN framework](https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html) to build and
+approximate nearest neighbour index.
 
 1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
 2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
-3. Post-process and export the embeddings from BigQuery ML model to a BigQuery table.
-
-After the item embeddings have been created and exported to the BigQuery table, you can follow the below tasks to implement the first variant of the system: 
-
+3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
 4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
-5. Create the approximate nearest neighbors index using the ScaNN library
-6. Deploy the index using AI Platform Prediction.
+5. Serve the embedding as an approximate nearest neighbor index using ScaNN on AI Platform Prediction for real-time similar items matching.
 
-Or the following tasks for the second variant:
+![Workflow](figures/diagram.png)
 
-7. Create an ANN index
-8. Deploy the index to the ANN endpoint
+## Tutorial Dataset
 
-The following diagram summarizes the workflow to implement the first variant:
+We use the public `bigquery-samples.playlists` BigQuery dataset to demonstrate
+the solutions. We use the playlist data to learn embeddings for songs based on their co-occurrences
+in different playlists. The learnt embeddings can be used to match and recommend relevant songs to a given song or playlist.
+
+
+
+
+
+
+
 
 ![Workflow](figures/diagram.png)
 
@@ -234,3 +238,26 @@ See the License for the specific language governing permissions and limitations 
 
 **This is not an official Google product but sample code provided for an educational purpose**
 
+
+
+In both variants, [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
+model is used to train item embeddings, which are then used to create and deploy a scalable and high performance approximate nearest neighbors search index and deploy it as an online service. In the first variant, the index is built using the ScaNN library and deployed using AI Platform Prediction. In the second variant, the managed ANN service is used to both create and deploy the index.
+
+The prescriptive guidance for implementing the systems has been structured as series of tasks. The first three tasks that describe the process of creating item embeddings are the same for both variants. 
+
+1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
+2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
+3. Post-process and export the embeddings from BigQuery ML model to a BigQuery table.
+
+After the item embeddings have been created and exported to the BigQuery table, you can follow the below tasks to implement the first variant of the system: 
+
+4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
+5. Create the approximate nearest neighbors index using the ScaNN library
+6. Deploy the index using AI Platform Prediction.
+
+Or the following tasks for the second variant:
+
+7. Create an ANN index
+8. Deploy the index to the ANN endpoint
+
+The following diagram summarizes the workflow to implement the first variant:
