@@ -128,7 +128,7 @@ The ScaNN matching service works as follows:
 
 ## AI Platform ANN service and AI Platform (Unified) Pipelines based solution 
 
-This is a fully managed variant of the solution that utilizes the new AI Platform  and AI Platform (Unified) Pipelines services. 
+This is a fully managed variant of the solution that utilizes the new AI Platform  and AI Platform (Unified) Pipelines services. Note that both services are currently in the Experimental stage and that the provided examples may have to be updated when the services move to the Preview and eventually to the General Availability.
 
 ![Workflow Ann](figures/ann-flow.png)
 
@@ -146,7 +146,18 @@ After the item embeddings have been trained and exported to a BigQuery table the
 7. The ANN service is used to create an approximate nearest search index from the exported files
 8. The index is deployed to the ANN service endpoint.
 
-The following diagram summarizes the workflow to implement the first variant:
+Similarly to the ScaNN library based solution, in addition to a manual step by step guideline, we provide an example TFX pipeline that automates the processing of training the embeddings and deploying the index.
+
+The pipeline is designed to run on AI Platform (Unified) Pipelines and relies on features introduced in v0.25 of TFX. Each step of the pipeline is implemented as a [TFX Custom Python function component](https://www.tensorflow.org/tfx/guide/custom_function_component).
+
+1. The first step of the pipeline is to compute item co-occurences using BigQuery 
+2. Next, the BQML Matrix Factorization model is created using the item co-occurance data created by the previous step. 
+3. Item embeddings are extracted from the trained model weights and stored in a BigQuery table. 
+4. The embeddings are exported in the JSONL format to the GCS location using the BigQuery extract job.
+5. The embeddings in the JSONL format are used to create an ANN index.
+6. Finally, the ANN index is deployed to an ANN endpoint.
+
+All steps and their inputs and outputs are tracked in the AI Platform (Unified) ML Metadata service. 
 
 
 
