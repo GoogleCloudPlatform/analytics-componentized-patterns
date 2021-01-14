@@ -3,8 +3,11 @@
 This directory contains code samples that demonstrate how to implement a low latency item-to-item recommendation solution. The foundation of the solution are [BigQuery](https://cloud.google.com/bigquery) and [ScaNN](https://github.com/google-research/google-research/tree/master/scann) - an open source library for efficient vector similarity search at scale.
 
 There are two variants of the solution:
-1. The first one utilizes the open source ScaNN library directly
-2. The second one leverages the AI Platform ANN Service, which is a GCP managed service (in the Experimental stage) built on top of the ScaNN library.
+1. The first utilizes generally available releases of BigQuery and AI Platform together with open source components including [ScaNN](https://github.com/google-research/google-research/tree/master/scann) and [Kubeflow Pipelines](https://www.kubeflow.org/docs/pipelines/overview/pipelines-overview/)
+2. The second one is a fully managed solution that leverages the AI Platform (Unified) experimental services including AI Platform Pipelines and AI Platform ANN.
+
+
+## Architecture overview
 
 In both variants, [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
 model is used to train item embeddings, which are then used to create and deploy a scalable and high performance approximate nearest neighbors search index and deploy it as an online service. In the first variant, the index is built using the ScaNN library and deployed using AI Platform Prediction. In the second variant, the managed ANN service is used to both create and deploy the index.
