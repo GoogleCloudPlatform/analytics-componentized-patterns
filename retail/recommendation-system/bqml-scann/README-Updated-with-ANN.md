@@ -4,7 +4,7 @@ This directory contains code samples that demonstrate how to implement a low lat
 
 There are two variants of the solution:
 1. The first utilizes generally available releases of BigQuery and AI Platform together with open source components including [ScaNN](https://github.com/google-research/google-research/tree/master/scann) and [Kubeflow Pipelines](https://www.kubeflow.org/docs/pipelines/overview/pipelines-overview/)
-2. The second one is a fully managed solution that leverages the AI Platform (Unified) experimental services including AI Platform Pipelines and AI Platform ANN.
+2. The second one is a fully managed solution that leverages the experimental releases of AI Platform Pipelines and AI Platform ANN service.
 
 
 ## Architecture overview
