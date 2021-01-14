@@ -21,13 +21,13 @@ approximate nearest neighbour index.
 
 ![Workflow](figures/diagram.png)
 
-## Tutorial Dataset
+### Example Dataset
 
 We use the public `bigquery-samples.playlists` BigQuery dataset to demonstrate
 the solutions. We use the playlist data to learn embeddings for songs based on their co-occurrences
 in different playlists. The learnt embeddings can be used to match and recommend relevant songs to a given song or playlist.
 
-## Before you begin
+### Before you begin
 
 Complete the following steps to set up your GCP environment:
 
@@ -57,7 +57,7 @@ To go through the tasks for running the solution, you need to open the JupyterLa
 
 When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
 
-## Using the Notebooks to Run the Solution
+### Using the Notebooks to Run the Solution
 
 We provide the following notebooks to prepare the BigQuery run environment 
 and the steps of the solution:
@@ -85,9 +85,9 @@ as a SavedModel, to act as an item-embedding lookup.
 This notebook covers building an approximate nearest neighbor index for the embeddings 
 using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
 
-## Running the Solution using TFX on AI Platform Pipelines
+### Running the Solution using TFX on AI Platform Pipelines
 
-We provide a [TFX pipeline](tfx_pipeline) implementation to the solution, as follows:
+In addition to manual steps outline above, we provide a [TFX pipeline](tfx_pipeline) that automates the process of building and deploying the solution:
 1. Compute PMI using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
 2. Train BigQuery ML matrix factorization model using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
 3. Extract the Embeddings from the BigQuery ML model to a BigQuery table using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
