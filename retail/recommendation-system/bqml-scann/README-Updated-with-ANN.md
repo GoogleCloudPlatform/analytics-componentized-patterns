@@ -128,7 +128,7 @@ The ScaNN matching service works as follows:
 
 ## AI Platform ANN service and AI Platform (Unified) Pipelines based solution 
 
-This is a fully managed variant of the solution that utilizes the new AI Platform ANN service. The service leverages the [ScaNN](https://github.com/google-research/google-research/tree/master/scann) library to provide an easy to use and scalable way of creating and deploying approximate nearest neighbor indexes. 
+This is a fully managed variant of the solution that utilizes the new AI Platform  and AI Platform (Unified) Pipelines services. 
 
 ![Workflow Ann](figures/ann-flow.png)
 
