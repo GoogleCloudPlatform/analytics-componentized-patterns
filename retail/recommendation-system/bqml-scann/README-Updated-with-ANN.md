@@ -110,7 +110,7 @@ TFX pipeline components.
 the TFX pipeline and the AI Platform Training job, compiling the TFX pipeline, and deploying the pipeline to 
 AI Platform Pipelines.
 
-## Deploying the Embedding Lookup and ScaNN index to AI Platform
+### Deploying the Embedding Lookup and ScaNN index to AI Platform
 
 After running the solution, an embedding lookup SaveModel and a ScaNN index will be produced.
 To deploy these artifacts to AI Platform as prediction service, you can use the 
