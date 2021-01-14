@@ -168,107 +168,18 @@ To use AI Platform Pipelines and ANN services are in the Experimental stage you 
 
 Please contact your Google representative for more information and support.
 
-#### Enabling the Cloud APIs required by the ANN Service
+## Using Jupyter notebooks
 
-You need to enable the following APIs to use the ANN service:
+The solution implementation steps have been detailed in two Jupyter notebooks:
 
-* aiplatform.googleapis.com
-* servicenetworking.googleapis.com
-* compute.googleapis.com
-
-#### Configuring private IP access to the ANN Service
-
-In the experimental release, ANN service is only accessible using private endpoints. Before using the service you need to have a [VPC network](https://cloud.google.com/vpc) configured with [private services access](https://cloud.google.com/vpc/docs/configure-private-services-access). You can use the `default` VPC or create a new one.
-
-The below instructions are for a VPC that was created with auto subnets and regional dynamic routing mode (defaults). It is recommended that you execute the below commands from Cloud Shell, using the account with the `roles/compute.networkAdmin` permissions.
-
-1. Set environment variables for your project ID, the name of your VPC network, and the name of your reserved range of addresses. The name of the reserved range can be an arbitrary name. It is for display only.
-
-```
-PROJECT_ID=<your-project-id>
-gcloud config set project $PROJECT_ID
-NETWORK_NAME=<your-VPC-network-name>
-PEERING_RANGE_NAME=google-reserved-range
-
-```
-
-2. Reserve an IP range for Google services. The reserved range should be large enought to accommodate all peered services. The below command reserves a CIDR block with mask /16
-
-```
-gcloud compute addresses create $PEERING_RANGE_NAME \
-  --global \
-  --prefix-length=16 \
-  --description="peering range for Google service: AI Platform Online Prediction" \
-  --network=$NETWORK_NAME \
-  --purpose=VPC_PEERING \
-  --project=$PROJECT_ID
-
-```
-
-3. Create a private connection to establish a VPC Network Peering between your VPC network and the Google services network.
-
-```
-gcloud services vpc-peerings connect \
-  --service=servicenetworking.googleapis.com \
-  --network=$NETWORK_NAME \
-  --ranges=$PEERING_RANGE_NAME \
-  --project=$PROJECT_ID
-
-```
-
-### Additional setup required when using AI Platform (Unified) Pipelines
-
-While AI Platform (Unified) Pipelines is in the Experimental stage, your project and user IDs must be allow-listed before using the service. Contact your Google representative for more information.
-
-## Using the Jupyter notebooks
-
-The system implementation tasks have been detailed in a series of Jupyter notebooks:
-
-**Preparing the BigQuery environment**
-
-1. [00_prep_bq_and_datastore.ipynb](00_prep_bq_and_datastore.ipynb) - 
-This is a prerequisite notebook that covers:
-   1. Copying the `bigquery-samples.playlists.playlist` table to your BigQuery dataset.
-   2. Exporting the songs information to Datastore so that you can lookup the information of a given song in real-time.
-2. [00_prep_bq_procedures.ipynb](00_prep_bq_procedures.ipynb) - This is a prerequisite notebook that covers creating the BigQuery 
-stored procedures executed by the solution.
-
-**Creating embeddings**
-
-1. [01_train_bqml_mf_pmi.ipynb](01_train_bqml_mf_pmi.ipynb) - This notebook covers computing pairwise item co-occurrences
-to train the the BigQuery ML Matrix Factorization model, and generate embeddings for the items.
-2. [02_export_bqml_mf_embeddings.ipynb](02_export_bqml_mf_embeddings.ipynb) - 
-This notebook covers extracting the trained embeddings from the Matrix Factorization BigQuery ML Model to a BigQuery table and exporting them to Cloud Storage.
-
-**Creating and deploying an approximate nearest neighbor index using ScaNN library and AI Platform Prediction**
-1. [03_create_embedding_lookup_model.ipynb](03_create_embedding_lookup_model.ipynb) - 
-This notebook covers wrapping the item embeddings in a Keras model and exporting it
-as a SavedModel, to act as an item-embedding lookup.
-2. [04_build_embeddings_scann.ipynb](04_build_embeddings_scann.ipynb) - 
-This notebook covers building an approximate nearest neighbor index for the embeddings 
-using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
-3. [05_deploy_lookup_and_scann_caip.ipynb](05_deploy_lookup_and_scann_caip.ipynb) -
-This noteoobk covers deploying the Embedding Lookup SavedModel and the ScaNN index to AI Platform Prediction.
-
-**Creating and deploying an approximate nearest neighbor index using AI Platform ANN Service**
 1. [ann-01-create-index.ipynb](ann-01-create-index.ipynb) -
 This notebook walks you through creating an ANN index, creating an ANN endpoint, and deploying the index to the endpoint. It also shows how to call the interfaces exposed by the deployed index.
 
+2. [ann-02-create-tfx-pipeline.ipynb](ann-02-create-tfx-pipeline.ipynb) -
+This notebook demonstrates how to create and test the TFX pipeline and how to submit pipeline runs to AI Platform (Unfied) Pipelines.
 
-**Orchestrating the workflow using AI Platform Pipelines Beta**
-The implementation of the pipeline is in the [tfx_pipeline](tfx_pipeline) directory. 
-We provide the following notebooks to facilitate running the TFX pipeline:
-1. [tfx01_interactive](tfx01_interactive.ipynb) - This notebook covers interactive execution of the 
-TFX pipeline components.
-2. [tfx02_deploy_run](tfx02_deploy_run.ipynb) - This notebook covers building the Docker container image required by
-the TFX pipeline and the AI Platform Training job, compiling the TFX pipeline, and deploying the pipeline to 
-AI Platform Pipelines.
+Before experimenting with the notebooks make sure that you have prepared the BigQuery environment and trained and extracted item embeddings using the procedures described in the ScaNN library based solution.
 
-
-**Orchestrating the workflow using AI Platform (Unified) Pipelines**
-
-The [ann-02-create-tfx-pipeline.ipynb](ann-02-create-tfx-pipeline.ipynb) notebook walks you through the process of creating TFX custom components and the TFX pipeline 
-The notebook also shows how to test the pipeline locally and how to submit pipeline runs to the AI Platform (Unified) Pipelines service.
 
 
 ## License
