@@ -134,9 +134,9 @@ This is a fully managed variant of the solution that utilizes the new AI Platfor
 
 The first three tasks:
 
-1. Compute pointwise mutual information (PMI) between items based on their co-occurrences,
-2. Train item embeddings using BigQuery ML Matrix Factorization,
-3. Post-process and export the embeddings from BigQuery ML model to a BigQuery table,
+1. Computing item co-occurrences,
+2. Training item embeddings,
+3. Post-processing and exporting the embeddings from BigQuery ML Matrix Factorization Model,
 
 are the same as in the variant that utilizes the open-source ScaNN library.
 
