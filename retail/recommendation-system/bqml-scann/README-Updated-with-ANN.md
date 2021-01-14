@@ -146,7 +146,7 @@ After the item embeddings have been trained and exported to a BigQuery table the
 7. The ANN service is used to create an approximate nearest search index from the exported files
 8. The index is deployed to the ANN service endpoint.
 
-Similarly to the ScaNN library based solution, in addition to a manual step by step walk-through, we provide an example TFX pipeline that automates the processing of training the embeddings and deploying the index.
+Similarly to the ScaNN library based solution, in addition to a manual step by step walk-through, we provide an example TFX pipeline that automates the process of training the embeddings and deploying the index.
 
 The pipeline is designed to run on AI Platform (Unified) Pipelines and relies on features introduced in v0.25 of TFX. Each step of the pipeline is implemented as a [TFX Custom Python function component](https://www.tensorflow.org/tfx/guide/custom_function_component).
 
@@ -162,42 +162,11 @@ The pipeline is designed to run on AI Platform (Unified) Pipelines and relies on
 All steps and their inputs and outputs are tracked in the AI Platform (Unified) ML Metadata service. 
 
 
+### Setting up the environment
 
+To use AI Platform Pipelines and ANN services are in the Experimental stage you need to allow-list you project and user account.
 
-
-## Before you begin
-
-Complete the following steps to set up your GCP environment:
-
-1. In the [Cloud Console, on the project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Cloud project.
-2. Make sure that [billing is enabled](https://cloud.google.com/billing/docs/how-to/modify-project) for your Google Cloud project. 
-3. [Enable the APIs](https://console.cloud.google.com/apis/library)
- required for the solution: Compute Engine, Dataflow, Datastore, AI Platform, Artifact Registry, Identity and Access Management, Cloud Build, and BigQuery.
-4. Use BigQuery [flat-rate or reservations](https://cloud.google.com/bigquery/docs/reservations-intro) to run BigQuery ML matrix factorization.
-5. Create or have access to an existing [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
-6. Create a [Datastore database instance](https://cloud.google.com/datastore/docs/quickstart)  with Firestore in Datastore Mode.
-7. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.3 runtime.
-8. [Create AI Platform Pipelines](https://cloud.google.com/ai-platform/pipelines/docs/setting-up) to run the TFX pipeline.
-
-To go through the tasks for running the solution, you need to open the JupyterLab environment in the AI Notebook and clone the repository:
-1. In the AI Platform Notebook list, click Open Jupyterlab. This opens the JupyterLab environment in your browser.
-2. To launch a terminal tab, click the Terminal icon from the Launcher menu.
-3. In the terminal, clone the `analytics-componentized-patterns` repository:
-
-    ```git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git```
-   
-4. Install the required libraries:
-
-    ```
-    cd analytics-componentized-patterns/retail/recommendation-system/bqml-scann
-    pip install -r requirements.txt
-    ```
-
-When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
-
-### Additional setup required when using ANN Service 
-
-While AI Platform ANN Service is in the Experimental stage your project and user IDs must be allow-listed before using the service. Contact your Google representative for more information.
+Please contact your Google representative for more information and support.
 
 #### Enabling the Cloud APIs required by the ANN Service
 
