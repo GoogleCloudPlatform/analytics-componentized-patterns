@@ -150,6 +150,8 @@ Similarly to the ScaNN library based solution, in addition to a manual step by s
 
 The pipeline is designed to run on AI Platform (Unified) Pipelines and relies on features introduced in v0.25 of TFX. Each step of the pipeline is implemented as a [TFX Custom Python function component](https://www.tensorflow.org/tfx/guide/custom_function_component).
 
+![TFX Ann](figures/ann-tfx.png)
+
 1. The first step of the pipeline is to compute item co-occurences using BigQuery 
 2. Next, the BQML Matrix Factorization model is created using the item co-occurance data created by the previous step. 
 3. Item embeddings are extracted from the trained model weights and stored in a BigQuery table. 
