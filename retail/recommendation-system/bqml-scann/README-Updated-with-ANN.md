@@ -146,7 +146,7 @@ After the item embeddings have been trained and exported to a BigQuery table the
 7. The ANN service is used to create an approximate nearest search index from the exported files
 8. The index is deployed to the ANN service endpoint.
 
-Similarly to the ScaNN library based solution, in addition to a manual step by step guideline, we provide an example TFX pipeline that automates the processing of training the embeddings and deploying the index.
+Similarly to the ScaNN library based solution, in addition to a manual step by step walk-through, we provide an example TFX pipeline that automates the processing of training the embeddings and deploying the index.
 
 The pipeline is designed to run on AI Platform (Unified) Pipelines and relies on features introduced in v0.25 of TFX. Each step of the pipeline is implemented as a [TFX Custom Python function component](https://www.tensorflow.org/tfx/guide/custom_function_component).
 
