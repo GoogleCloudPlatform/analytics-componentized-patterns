@@ -8,17 +8,21 @@ From sample dataset to activation, these componentized patterns are designed to 
 * Recommendation systems:
   * How to build a recommendation system on e-commerce data using BigQuery ML. ([Code][recomm_code] | [Blog Article][recomm_blog])
 * Propensity to purchase model:
-  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines. ([Code][propen_code])
+  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines. ([Code][propen_code] | [Blog Article][propen_blog])
 * Activate on Lifetime Value predictions: 
   * How to predict the monetary value of your customers and extract emails of the top customers to use in Adwords for example to create similar audiences. Automation is done by a combination of BigQuery Scripting, Stored Procedure and bash script. ([Code][ltv_code])
 * Clustering:
   * How to build customer segmentation through k-means clustering using BigQuery ML. ([Code][clustering_code])
+* Demand Forecasting:
+  * How to build a time series demand forecasting model using BigQuery ML ([Code][demandforecasting_code])
 
 [recomm_code]: retail/recommendation-system/bqml
 [recomm_blog]: https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110
 [propen_code]: retail/propensity-model/bqml
+[propen_blog]: https://medium.com/google-cloud/how-to-build-an-end-to-end-propensity-to-purchase-solution-using-bigquery-ml-and-kubeflow-pipelines-cd4161f734d9
 [ltv_code]: retail/ltv/bqml
 [clustering_code]: retail/clustering/bqml
+[demandforecasting_code]: retail/time-series/bqml-demand-forecasting
 
 
 ## Disclaimer
