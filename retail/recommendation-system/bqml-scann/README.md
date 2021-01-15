@@ -1,25 +1,18 @@
-# Real-time Item-to-item Recommendation with BigQuery ML Matrix Factorization and ScaNN
+# Low latency item-to-item recommendation system
 
-This directory contains a sample code for training and serving embeddings 
-for real-time similarity matching. The system utilizes [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
-model to train the embeddings, and the open-source [ScaNN framework](https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html) to build and
-approximate nearest neighbour index.
+This directory contains code samples that demonstrate how to implement a low latency item-to-item recommendation solution. The foundation of the solution are [BigQuery](https://cloud.google.com/bigquery) and [ScaNN](https://github.com/google-research/google-research/tree/master/scann) - an open source library for efficient vector similarity search at scale.
 
-1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
-2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
-3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
-4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
-5. Serve the embedding as an approximate nearest neighbor index using ScaNN on AI Platform Prediction for real-time similar items matching.
+There are two variants of the solution:
+1. The first utilizes generally available releases of BigQuery and AI Platform together with open source components including [ScaNN](https://github.com/google-research/google-research/tree/master/scann) and [Kubeflow Pipelines](https://www.kubeflow.org/docs/pipelines/overview/pipelines-overview/)
+2. The second one is a fully-managed solution that leverages the *experimental* releases of AI Platform Pipelines and ANN service.
 
-![Workflow](figures/diagram.png)
-
-## Tutorial Dataset
+### Example Dataset
 
 We use the public `bigquery-samples.playlists` BigQuery dataset to demonstrate
 the solutions. We use the playlist data to learn embeddings for songs based on their co-occurrences
 in different playlists. The learnt embeddings can be used to match and recommend relevant songs to a given song or playlist.
 
-## Before you begin
+### Before you begin
 
 Complete the following steps to set up your GCP environment:
 
@@ -50,7 +43,21 @@ To go through the tasks for running the solution, you need to open the JupyterLa
 When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
 
 
-## Using the Notebooks to Run the Solution
+## ScaNN and OSS Kubeflow Pipelines based solution 
+
+The system utilizes [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
+model to train the embeddings, and the open-source [ScaNN framework](https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html) to build and
+approximate nearest neighbour index.
+
+1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
+2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
+3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
+4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
+5. Serve the embedding as an approximate nearest neighbor index using ScaNN on AI Platform Prediction for real-time similar items matching.
+
+![Workflow](figures/diagram.png)
+
+### Using the Notebooks to Run the Solution
 
 We provide the following notebooks to prepare the BigQuery run environment 
 and the steps of the solution:
@@ -78,9 +85,9 @@ as a SavedModel, to act as an item-embedding lookup.
 This notebook covers building an approximate nearest neighbor index for the embeddings 
 using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
 
-## Running the Solution using TFX on AI Platform Pipelines
+### Running the Solution using TFX on AI Platform Pipelines
 
-We provide a [TFX pipeline](tfx_pipeline) implementation to the solution, as follows:
+In addition to manual steps outline above, we provide a [TFX pipeline](tfx_pipeline) that automates the process of building and deploying the solution:
 1. Compute PMI using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
 2. Train BigQuery ML matrix factorization model using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
 3. Extract the Embeddings from the BigQuery ML model to a BigQuery table using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
@@ -103,7 +110,7 @@ TFX pipeline components.
 the TFX pipeline and the AI Platform Training job, compiling the TFX pipeline, and deploying the pipeline to 
 AI Platform Pipelines.
 
-## Deploying the Embedding Lookup and ScaNN index to AI Platform
+### Deploying the Embedding Lookup and ScaNN index to AI Platform
 
 After running the solution, an embedding lookup SaveModel and a ScaNN index will be produced.
 To deploy these artifacts to AI Platform as prediction service, you can use the 
@@ -116,6 +123,52 @@ The ScaNN matching service works as follows:
 2. Looks up the embedding of the query item Id from Embedding Lookup Model in AI Platform Prediction.
 3. Uses the ScaNN index to find similar item Ids for the given query item embedding.
 4. Returns a list of the similar item Ids to the query item Id.
+
+
+## AI Platform ANN service and AI Platform (Unified) Pipelines based solution 
+
+This is a fully managed variant of the solution that utilizes the new AI Platform  and AI Platform (Unified) Pipelines services. 
+Note that both services are currently in the Experimental stage and that the provided examples may have to be updated when 
+the services move to the Preview and eventually to the General Availability. Setting up
+the managed ANN service is described in the [ann_setup.md](ann_setup.md) file.
+
+
+> To use the Experimental releases of AI Platform Pipelines and ANN services you need to allow-list you project and user account. 
+Please contact your Google representative for more information and support.
+
+
+![Workflow Ann](figures/ann-flow.png)
+
+
+1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
+2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
+3. Post-process and export the embeddings from BigQuery ML Matrix Factorization Model to Cloud Storage JSONL formatted files.
+4. Create an approximate nearest search index using the ANN service and the exported embedding files.
+5. Deployed to the index as an ANN service endpoint.
+
+Note that the first two steps are the same as the ScaNN library based solution.
+
+we provide an example TFX pipeline that automates the process of training the embeddings and deploying the index.
+
+The pipeline is designed to run on AI Platform (Unified) Pipelines and relies on features introduced in v0.25 of TFX. 
+Each step of the pipeline is implemented as a [TFX Custom Python function component](https://www.tensorflow.org/tfx/guide/custom_function_component).
+All steps and their inputs and outputs are tracked in the AI Platform (Unified) ML Metadata service. 
+
+![TFX Ann](figures/ann-tfx.png)
+
+
+## Using Jupyter notebooks
+
+The solution implementation steps have been detailed in two Jupyter notebooks:
+
+1. [ann01_create_index.ipynb](ann01_create_index.ipynb) -
+This notebook walks you through creating an ANN index, creating an ANN endpoint, and deploying the index to the endpoint. It also shows how to call the interfaces exposed by the deployed index.
+
+2. [ann02_run_pipeline.ipynb](ann02_run_pipeline.ipynb) -
+This notebook demonstrates how to create and test the TFX pipeline and how to submit pipeline runs to AI Platform (Unfied) Pipelines.
+
+Before experimenting with the notebooks make sure that you have prepared the BigQuery environment and trained and extracted item embeddings using the procedures described in the ScaNN library based solution.
+
 
 
 ## License
