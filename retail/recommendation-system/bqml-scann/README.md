@@ -43,7 +43,7 @@ At a high level, the solution works as follows:
 1. Serves the embeddings as an approximate nearest neighbor index on AI
    Platform Prediction for real-time similar items matching.
 
-![Diagram showing the architecture of the item embedding solution.](/figures/diagram.png)
+![Diagram showing the architecture of the item embedding solution.](figures/diagram.png)
 
 For a detailed description of the solution architecture, see
 [Architecture of a machine learning system for item matching](https://cloud.google.com/solutions/real-time-item-matching).
