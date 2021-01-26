@@ -1,186 +1,438 @@
-# Low latency item-to-item recommendation system
+# Real-time Item-to-item Recommendation with BigQuery ML Matrix Factorization and ScaNN
 
-This directory contains code samples that demonstrate how to implement a low latency item-to-item recommendation solution. The foundation of the solution are [BigQuery](https://cloud.google.com/bigquery) and [ScaNN](https://github.com/google-research/google-research/tree/master/scann) - an open source library for efficient vector similarity search at scale.
+This directory contains code samples that demonstrate how to implement a low
+latency item-to-item recommendation solution, by training and serving embeddings
+that you can use to enable real-time similarity matching. The foundations of the
+solution are [BigQuery](https://cloud.google.com/bigquery) and
+[ScaNN](https://github.com/google-research/google-research/tree/master/scann),
+which is an open source library for efficient vector similarity search at scale.
+
+## Solution variants
 
 There are two variants of the solution:
-1. The first utilizes generally available releases of BigQuery and AI Platform together with open source components including [ScaNN](https://github.com/google-research/google-research/tree/master/scann) and [Kubeflow Pipelines](https://www.kubeflow.org/docs/pipelines/overview/pipelines-overview/)
-2. The second one is a fully-managed solution that leverages the *experimental* releases of AI Platform Pipelines and ANN service.
 
-### Example Dataset
+-  The first variant utilizes generally available releases of BigQuery and
+   AI Platform together with open source components including ScaNN and
+   [Kubeflow Pipeline](https://www.kubeflow.org/docs/pipelines/overview/pipelines-overview/).
+   To use this variant, follow the instructions in the [Production
+   variant](#heading=h.zdl5xw2h3ehk) section.
+-  The second variant is a fully-managed solution that leverages the
+   _experimental_ releases of AI Platform Pipelines and ANN service.To use this
+   variant, follow the instructions in the [Experimental
+   variant](#heading=h.z0jszspzu0mu) section.
 
-We use the public `bigquery-samples.playlists` BigQuery dataset to demonstrate
-the solutions. We use the playlist data to learn embeddings for songs based on their co-occurrences
-in different playlists. The learnt embeddings can be used to match and recommend relevant songs to a given song or playlist.
+## Dataset
 
-### Before you begin
+We use the public bigquery-samples.playlists BigQuery dataset to demonstrate the
+solutions. We use the playlist data to learn embeddings for songs based on their
+co-occurrences in different playlists. The learned embeddings can be used to
+match and recommend relevant songs to a given song or playlist.
 
-Complete the following steps to set up your GCP environment:
+## Production variant
 
-1. In the [Cloud Console, on the project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Cloud project.
-2. Make sure that [billing is enabled](https://cloud.google.com/billing/docs/how-to/modify-project) for your Google Cloud project. 
-3. [Enable the APIs](https://console.cloud.google.com/apis/library)
- required for the solution: Compute Engine, Dataflow, Datastore, AI Platform, Artifact Registry, Identity and Access Management, Cloud Build, and BigQuery.
-4. Use BigQuery [flat-rate or reservations](https://cloud.google.com/bigquery/docs/reservations-intro) to run BigQuery ML matrix factorization.
-5. Create or have access to an existing [Cloud Storage bucket](https://cloud.google.com/storage/docs/creating-buckets).
-6. Create a [Datastore database instance](https://cloud.google.com/datastore/docs/quickstart)  with Firestore in Datastore Mode.
-7. [Create an AI Notebook Instance](https://cloud.google.com/ai-platform/notebooks/docs/create-new)  with TensorFlow 2.3 runtime.
-8. [Create AI Platform Pipelines](https://cloud.google.com/ai-platform/pipelines/docs/setting-up) to run the TFX pipeline.
+At a high level, the solution works as follows:
 
-To go through the tasks for running the solution, you need to open the JupyterLab environment in the AI Notebook and clone the repository:
-1. In the AI Platform Notebook list, click Open Jupyterlab. This opens the JupyterLab environment in your browser.
-2. To launch a terminal tab, click the Terminal icon from the Launcher menu.
-3. In the terminal, clone the `analytics-componentized-patterns` repository:
+1. Computes pointwise mutual information (PMI) between items based on their
+   co-occurrences.
+1. Trains item embeddings using BigQuery ML Matrix Factorization, with item
+   PMI as implicit feedback.
+1. Using Cloud Dataflow, post-processes the embeddings into CSV files and
+   exports them from the BigQuery ML model to Cloud Storage.
+1. Implements an embedding lookup model using TensorFlow Keras, and then
+   deploys it to AI Platform Prediction.
+1. Serves the embeddings as an approximate nearest neighbor index on AI
+   Platform Prediction for real-time similar items matching.
 
-    ```git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git```
-   
-4. Install the required libraries:
+![Diagram showing the architecture of the item embedding solution.](/figures/diagram.png)
 
-    ```
-    cd analytics-componentized-patterns/retail/recommendation-system/bqml-scann
-    pip install -r requirements.txt
-    ```
+For a detailed description of the solution architecture, see
+[Architecture of a machine learning system for item matching](https://cloud.google.com/solutions/real-time-item-matching).
 
-When the command finishes, navigate to the `analytics-componentized-patterns/retail/recommendation-system/bqml-scann` directory in the file browser.
+The series is for data scientists and ML engineers who want to build an
+embedding training system and serve for item-item recommendation use cases. It
+assumes that you have experience with Google Cloud,
+[BigQuery](https://cloud.google.com/bigquery), [AI
+Platform](https://cloud.google.com/ai-platform),
+[Dataflow](https://cloud.google.com/dataflow),
+[Datastore](https://cloud.google.com/datastore), and with
+[Tensorflow](https://www.tensorflow.org/) and [TFX
+Pipelines](https://www.tensorflow.org/tfx).
 
+### Cost
 
-## ScaNN and OSS Kubeflow Pipelines based solution 
+The solution uses the following billable components of Google Cloud:
 
-The system utilizes [BigQuery ML Matrix Factorization](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-matrix-factorization)
-model to train the embeddings, and the open-source [ScaNN framework](https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html) to build and
-approximate nearest neighbour index.
+-  AI Platform Notebooks
+-  AI Platform Pipelines
+-  AI Platform Prediction
+-  AI Platform Training
+-  Artifact Registry
+-  BigQuery
+-  Cloud Build
+-  Cloud Storage
+-  Dataflow
+-  Datastore
 
-1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
-2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
-3. Export and post-process the embeddings from BigQuery ML model to Cloud Storage as CSV files using Cloud Dataflow.
-4. Implement an embedding lookup model using Keras and deploy it to AI Platform Prediction.
-5. Serve the embedding as an approximate nearest neighbor index using ScaNN on AI Platform Prediction for real-time similar items matching.
+To learn about Google Cloud pricing, use the [Pricing
+Calculator](https://cloud.google.com/products/calculator) to generate a cost
+estimate based on your projected usage.
 
-![Workflow](figures/diagram.png)
+### Running the solution
 
-### Using the Notebooks to Run the Solution
+You can run the solution step-by-step, or you can run it by using a TFX
+pipeline. 
 
-We provide the following notebooks to prepare the BigQuery run environment 
-and the steps of the solution:
+#### Run the solution step-by-step
 
-**Preparing the BigQuery environment**
+1. Complete the steps in [Set up the GCP environment](#heading=h.77t65odcvly2).
+1. Complete the steps in [Set up the AI Platform Notebooks
+   environment](#heading=h.5qq7pv3kx842).
+1. In the Jupyterlab environment of the `embeddings-notebooks` instance, open
+   the file browser pane and navigate to the
+   `analytics-componentized-patterns/retail/recommendation-system/bqml-scann`
+   directory.
+1. Run the 00_prep_bq_and_datastore.ipynb notebook to import the `playlist`
+   dataset, create the  `vw_item_groups` view with song and playlist data, and
+   export song title and artist information to Datastore.
+1. Run the `00_prep_bq_procedures` notebook to create stored procedures
+   needed by the solution.
+1. Run the 01_train_bqml_mf_pmi.ipynb notebook. This covers computing item
+   co-occurrences using PMI, and then training a BigQuery ML matrix
+   factorization mode to generate item embeddings.
+1. Run the 02_export_bqml_mf_embeddings.ipynb notebook. This covers using
+   Dataflow to request the embeddings from the matrix factorization model,
+   format them as CSV files, and export them to Cloud Storage.
+1. Run the 03_create_embedding_lookup_model.ipynb notebook. This covers
+   creating a TensorFlow Keras model to wrap the item embeddings, exporting
+   that model as a SavedModel, and deploying that SavedModel to act as an
+   item-embedding lookup.
+1. Run the 04_build_embeddings_scann.ipynb notebook. This covers building an
+   approximate nearest neighbor index for the embeddings using ScaNN and AI
+   Platform Training, then exporting the ScaNN index to Cloud Storage.
+1. Run the 05_deploy_lookup_and_scann_caip.ipynb notebook. This covers
+   deploying the embedding lookup model and ScaNN index (wrapped in a Flask app
+   to add functionality) created by the solution.
 
-1. [00_prep_bq_and_datastore.ipynb](00_prep_bq_and_datastore.ipynb) - 
-This is a prerequisite notebook that covers:
-   1. Copying the `bigquery-samples.playlists.playlist` table to your BigQuery dataset.
-   2. Exporting the songs information to Datastore so that you can lookup the information of a given song in real-time.
-2. [00_prep_bq_procedures.ipynb](00_prep_bq_procedures.ipynb) - This is a prerequisite notebook that covers creating the BigQuery 
-stored procedures executed by the solution.
+#### Run the solution by using a TFX pipeline
 
-**Running the solution**
+In addition to manual steps outlined above, we provide a
+[TFX pipeline](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/recommendation-system/bqml-scann/tfx_pipeline)
+that automates the process of building and deploying the solution. To run the
+solution by using the TFX pipeline, follow these steps:
 
-1. [01_train_bqml_mf_pmi.ipynb](01_train_bqml_mf_pmi.ipynb) - This notebook covers computing pairwise item co-occurrences
-to train the the BigQuery ML Matrix Factorization model, and generate embeddings for the items.
-2. [02_export_bqml_mf_embeddings.ipynb](02_export_bqml_mf_embeddings.ipynb) - 
-This notebook covers exporting the trained embeddings from the Matrix Factorization BigQuery ML Model to Cloud Storage,
-as CSV files, using Apache Beam and Cloud Dataflow.
-3. [03_create_embedding_lookup_model.ipynb](03_create_embedding_lookup_model.ipynb) - 
-This notebook covers wrapping the item embeddings in a Keras model and exporting it
-as a SavedModel, to act as an item-embedding lookup.
-4. [04_build_embeddings_scann.ipynb](04_build_embeddings_scann.ipynb) - 
-This notebook covers building an approximate nearest neighbor index for the embeddings 
-using ScaNN and AI Platform Training. The built ScaNN index then is stored in Cloud Storage.
+1. Complete the steps in [Set up the GCP environment](#heading=h.77t65odcvly2).
+1. Complete the steps in [Set up the AI Platform Notebooks
+   environment](#heading=h.5qq7pv3kx842).
+1. In the Jupyterlab environment of the `embeddings-notebooks` instance, open
+   the file browser pane and navigate to the
+   `analytics-componentized-patterns/retail/recommendation-system/bqml-scann`
+   directory.
+1. Run the 00_prep_bq_and_datastore.ipynb notebook to import the `playlist`
+   dataset, create the  `vw_item_groups` view with song and playlist data, and
+   export song title and artist information to Datastore.
+1. Run the `00_prep_bq_procedures` notebook to create stored procedures
+   needed by the solution.
+1. Run the Tfx01_interactive.ipynb notebook. This covers creating and running
+   a TFX pipeline that runs the solution, which includes all of the tasks
+   mentioned in the step-by-step notebooks above.
+1. Run the Tfx02_deploy_run.ipynb notebook. This covers deploying the TFX
+   pipeline, including building a Docker container image, compiling the
+   pipeline, and deploying the pipeline to AI Platform Pipelines.
+1. Run the 05_deploy_lookup_and_scann_caip.ipynb notebook. This covers
+   deploying the embedding lookup model and ScaNN index (wrapped in a Flask app
+   to add functionality) created by the solution.
 
-### Running the Solution using TFX on AI Platform Pipelines
+## Set up the GCP environment
 
-In addition to manual steps outline above, we provide a [TFX pipeline](tfx_pipeline) that automates the process of building and deploying the solution:
-1. Compute PMI using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
-2. Train BigQuery ML matrix factorization model using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
-3. Extract the Embeddings from the BigQuery ML model to a BigQuery table using a [Custom Python function](https://www.tensorflow.org/tfx/guide/custom_function_component) component.
-4. Export the embeddings as TFRecords using the standard [BigQueryExampleGen](https://www.tensorflow.org/tfx/api_docs/python/tfx/extensions/google_cloud_big_query/example_gen/component/BigQueryExampleGen) component.
-5. Import the schema for the embeddings using the standard [ImporterNode](https://www.tensorflow.org/tfx/api_docs/python/tfx/components/ImporterNode) component.
-6. Validate the embeddings against the imported schema using the standard [StatisticsGen](https://www.tensorflow.org/tfx/guide/statsgen) and [ExampleValidator](https://www.tensorflow.org/tfx/guide/exampleval) components. 
-7. Create an embedding lookup SavedModel using the standard [Trainer](https://www.tensorflow.org/tfx/api_docs/python/tfx/components/Trainer) component.
-8. Push the embedding lookup model to a model registry directory using the standard [Pusher](https://www.tensorflow.org/tfx/guide/pusher) component.
-9. Build the ScaNN index using the standard [Trainer](https://www.tensorflow.org/tfx/api_docs/python/tfx/components/Trainer) component.
-10. Evaluate and validate the ScaNN index latency and recall by implementing a [TFX Custom Component](https://www.tensorflow.org/tfx/guide/custom_component).
-11. Push the ScaNN index to a model registry directory using standard [Pusher](https://www.tensorflow.org/tfx/guide/pusher) component.
+Before running the solution, you must complete the following steps to prepare an
+appropriate environment:
 
-![tfx](figures/tfx.png)
+1. Create and configure a GCP project.
+1. Create the GCP resources you need.
 
-The implementation of the pipeline is in the [tfx_pipeline](tfx_pipeline) directory. 
-We provide the following notebooks to facilitate running the TFX pipeline:
-1. [tfx01_interactive](tfx01_interactive.ipynb) - This notebook covers interactive execution of the 
-TFX pipeline components.
-2. [tfx02_deploy_run](tfx02_deploy_run.ipynb) - This notebook covers building the Docker container image required by
-the TFX pipeline and the AI Platform Training job, compiling the TFX pipeline, and deploying the pipeline to 
-AI Platform Pipelines.
+> Before creating the resources, consider what regions you want to use.
+Creating resources in the same region or multi-region (like US or EU) can
+reduce latency and improve performance.
 
-### Deploying the Embedding Lookup and ScaNN index to AI Platform
+1. Clone this repo to the AI Platform notebook environment.
+1. Install the solution requirements on the notebook environment.
+1. Add the sample dataset and some stored procedures to BigQuery.
 
-After running the solution, an embedding lookup SaveModel and a ScaNN index will be produced.
-To deploy these artifacts to AI Platform as prediction service, you can use the 
-[05_deploy_lookup_and_scann_caip.ipynb](05_deploy_lookup_and_scann_caip.ipynb) notebook, which covers:
-1. Deploying the Embedding Lookup SavedModel to AI Platform Prediction. 
-2. Deploying the ScaNN index to AI Platform Prediction, using a Custom Container, for real-time similar item matching. 
+### Set up the GCP project
 
-The ScaNN matching service works as follows:
-1. Accepts a query item Id.
-2. Looks up the embedding of the query item Id from Embedding Lookup Model in AI Platform Prediction.
-3. Uses the ScaNN index to find similar item Ids for the given query item embedding.
-4. Returns a list of the similar item Ids to the query item Id.
+1. In the Cloud Console, on the
+   [project selector page](https://console.cloud.google.com/projectselector2/home/dashboard),
+   select or create a Cloud project.
+1. Make sure that
+   [billing is enabled](https://cloud.google.com/billing/docs/how-to/modify-project)
+   for your Cloud project. 
+1. [Enable the Compute Engine, Dataflow, Datastore, AI Platform, AI Platform Notebooks, Artifact Registry, Identity and Access Management, Cloud Build, BigQuery, and BigQuery Reservations APIs](https://console.cloud.google.com/flows/enableapi?apiid=ml.googleapis.com,iam.googleapis.com,compute.googleapis.com,dataflow.googleapis.com,datastore.googleapis.com,cloudbuild.googleapis.com,bigquery.googleapis.com,artifactregistry.googleapis.com,notebooks.googleapis.com,bigqueryreservation.googleapis.com&redirect=https://console.cloud.google.com&_ga=2.132655758.1626284182.1607961461-1265457095.1607614309).
 
+### Create a BigQuery reservation
 
-## AI Platform ANN service and AI Platform (Unified) Pipelines based solution 
+If you use
+[on-demand pricing](https://cloud.google.com/bigquery/pricing#on_demand_pricing)
+for BigQuery, you must purchase flex slots and then create reservations and
+assignments for them in order to train a matrix factorization model. You can
+skip this section if you use flat-rate pricing with BigQuery.  
+You must have the `bigquery.reservations.create` permission in order to purchase
+flex slots. This permission is granted to the project owner, and also to the
+`bigquery.admin` and `bigquery.resourceAdmin` predefined Identity and Access
+Management roles.
 
-This is a fully managed variant of the solution that utilizes the new AI Platform  and AI Platform (Unified) Pipelines services. 
-Note that both services are currently in the Experimental stage and that the provided examples may have to be updated when 
-the services move to the Preview and eventually to the General Availability. Setting up
-the managed ANN service is described in the [ann_setup.md](ann_setup.md) file.
+1. In the [BigQuery console](https://pantheon.corp.google.com/bigquery),
+   click **Reservations**.
+1. On the **Reservations** page, click **Buy Slots**.
+1. On the **Buy Slots** page, set the options as follows:
+   1. In **Commitment duration**, choose **Flex**.
+   1. In **Location**, choose the region you want to use for BigQuery.
+      Depending on the region you choose, you may have to request additional
+      slot quota.
+   1. In **Number of slots**, choose **500**.
+   1. Click **Next**.
+   1. In **Purchase confirmation**, type `CONFIRM`.  
+      **Note:** The console displays an estimated monthly cost of $14,600.00.
+      You will delete the unused slots at the end of this tutorial, so you will
+      only pay for the slots you use to train the model. Training the model
+      takes approximately 2 hours.
 
+1. Click **Purchase**.
+1. Click **View Slot Commitments**.
+1. Allow up to 20 minutes for the capacity to be provisioned. After the
+   capacity is provisioned, the slot commitment status turns green and shows a
+   checkmark.
+1. Click **Create Reservation**.
+1. On the **Create Reservation** page, set the options as follows:
+   1. In **Reservation name**, type `model`.
+   1. In **Location**, choose whatever region you purchased the flex slots in.
+   1. In **Number of slots**, type `500`.
+   1. Click **Save**. This returns you to the **Reservations** page.
 
-> To use the Experimental releases of AI Platform Pipelines and ANN services you need to allow-list you project and user account. 
-Please contact your Google representative for more information and support.
+1. Select the **Assignments** tab.
+1. In **Select an organization, folder, or project**, click **Browse**.
+1. Type the name of the project you are using.
+1. Click **Select**.
+1. In **Reservation**, choose the **model** reservation you created.
+1. Click **Create**.
 
+### Create a Firestore in Datastore Mode database instance
+
+Create a Firestore in Datastore Mode database instance to store song title and
+artist information for lookup.
+
+1. [Open the Datastore console](https://console.cloud.google.com/datastore/welcome?_ga=2.196028332.1626284182.1607961461-1265457095.1607614309).
+1. Click **Select Datastore Mode**.
+1. For **Select a location**, choose the region you want to use for Datastore.
+1. Click **Create Database**.
+
+### Create a Cloud Storage bucket
+
+Create a Cloud Storage bucket to store the following objects:
+
+-  The SavedModel files for the models created in the solution.
+-  The temp files created by the Dataflow pipeline that processes the song
+   embeddings.
+-  The CSV files for the processed embeddings.
+
+1. [Open the Cloud Storage console](https://console.cloud.google.com/storage/browser?_ga=2.196028332.1626284182.1607961461-1265457095.1607614309).
+1. Click **Create Bucket**.
+1. For Name your bucket, type a bucket name. The name must be globally unique.
+1. For **Choose where to store your data**, select **Region** and then choose
+   the region you want to use for Cloud Storage.
+1. Click **Create**.
+
+### Create an AI Platform Notebooks instance
+
+Create an AI Platform Notebooks instance to run the notebooks that walk you
+through using the solution.
+
+1. [Open the AI Platform Notebooks console](https://console.cloud.google.com/ai-platform/notebooks/instances).
+1. Click **New Instance**.
+1. Choose **TensorFlow Enterprise 2.3, Without GPUs**.
+1. For **Instance name**, type `embeddings-notebooks`.
+1. For **Region**, choose the region you want to use for the AI Platform
+   Notebooks instance.
+1. Click **Create**. It takes a few minutes for the notebook instance to be
+   created.
+
+### Give the Cloud Build service account permissions to interact with Compute Engine 
+
+1. Open the
+   [Cloud Build settings page](https://console.cloud.google.com/cloud-build/settings/service-account).
+1. In the service account list, find the row for **Compute Engine** and
+   change the **Status** column value to **Enabled**.
+
+### Update the Compute Engine service account permissions
+
+Add the Compute Engine service account to the IAM Security Admin role. This is
+required so that later this account can set up other service accounts needed by
+the solution.
+
+1. Open the [IAM permissions
+   page](https://console.cloud.google.com/iam-admin/iam).
+1. In the members list, find the row for
+   `<projectNumber>-compute@developer.gserviceaccount.com` and click **Edit**.
+1. Click **Add another role**.
+1. In **Select a role**, choose **IAM** and then choose **Security Admin**.
+1. Click **Save**.
+
+### Create an AI Platform pipeline
+
+Create an AI Platform Pipelines instance to run the TensorFlow Extended (TFX)
+pipeline that automates the solution workflow. You can skip this step if you are
+running the solution using the step-by-step notebooks.
+
+#### Create a Cloud SQL instance
+
+Create a Cloud SQL instance to provide managed storage for the pipeline.
+
+1. [Open the Cloud SQL
+   console](https://console.cloud.google.com/sql/instances).
+1. Click **Create Instance**.
+1. On the **MySQL** card, click **Choose MySQL**.
+1. For **Instance ID**, type `pipeline-db`.
+1. For **Root Password**, type in the password you want to use for the root
+   user.
+1. For **Region**, type in the region you want to use for the database instance.
+1. Click **Create**.
+
+#### Create the pipeline
+
+1. [Open the AI Platform Pipelines console](https://console.cloud.google.com/ai-platform/pipelines/clusters).
+1. In the AI Platform Pipelines toolbar, click **New instance**. Kubeflow
+   Pipelines opens in Google Cloud Marketplace.
+1. Click **Configure**. The **Deploy Kubeflow Pipelines** form opens.
+1. If the following field is displayed, select an existing cluster or click
+**Create a new cluster**:  
+
+   ![image](https://drive.google.com/file/d/1hKMGbvGLoZK09Y9VlPMQsMSpD497jSr2/view?usp=drivesdk&resourcekey=0-LeMpi4X67cCAjQnOGjLZFg)
+
+1. For **Cluster zone**, choose a zone in the region you want to use for AI
+   Platform Pipelines.
+1. Check **Allow access to the following Cloud APIs** to grant applications
+   that run on your GKE cluster access to Google Cloud resources. By checking
+   this box, you are granting your cluster access to the
+   `https://www.googleapis.com/auth/cloud-platform` access scope. This access
+   scope provides full access to the Google Cloud resources that you have
+   enabled in your project. Granting your cluster access to Google Cloud
+   resources in this manner saves you the effort of
+   [creating and managing a service account](https://cloud.google.com/ai-platform/pipelines/docs/configure-gke-cluster#configure-service-account)
+   or
+   [creating a Kubernetes secret](https://cloud.google.com/ai-platform/pipelines/docs/configure-gke-cluster#grant-access).
+1. Click **Create cluster**. This step may take several minutes.
+1. Select **Create a namespace** in the **Namespace** drop-down list. Type
+   `kubeflow-pipelines`  in **New namespace name**.
+
+   To learn more about namespaces, read a blog post about
+[organizing Kubernetes with namespaces](https://cloud.google.com/blog/products/gcp/kubernetes-best-practices-organizing-with-namespaces).
+
+1. In the **App instance name** box, enter a name for your Kubeflow
+   Pipelines instance.
+1. Select **Use managed storage** and supply the following information:
+   -  **Artifact storage Cloud Storage bucket**: Specify the name of the
+      bucket you created in the "Create a Cloud Storage bucket" procedure.
+   -  **Cloud SQL instance connection name**: Specify the connection name
+      for the Cloud SQL instance you created in the "Create a Cloud SQL
+      instance" procedure. The instance connection name can be found on the
+      instance detail page in the Cloud SQL console.
+   -  **Database username**: Leave this field empty to default to **root**.
+   -  **Database password**: Specify the root user password for the Cloud
+      SQL instance you created in the "Create a Cloud SQL instance" procedure.
+   -  **Database name prefix**: Type `embeddings`.
+
+1. Click **Deploy**. This step may take several minutes.
+
+## Set up the AI Platform Notebooks environment
+
+You use notebooks to complete the BigQuery prerequisites and then run the
+solution. To use the notebooks, you must clone the solution's GitHub repo to
+your AI Platform Notebooks JupyterLab instance.
+
+1. [Open the AI Platform Notebooks console](https://console.cloud.google.com/ai-platform/notebooks/instances).
+1. Click **Open JupyterLab** for the `embeddings-notebooks` instance.
+1. In the **Other** section of the JupyterLab Launcher, click **Terminal**.
+1. In the terminal, run the following command to clone the
+   `analytics-componentized-patterns` Github repository:
+
+```
+git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git
+```
+
+1. In the terminal, run the following command to install packages required
+   by the solution:
+
+```
+pip install -r analytics-componentized-patterns/retail/recommendation-system/bqml-scann/requirements.txt
+```
+
+## Experimental variant
+
+The experimental variant of the solution utilizes the new AI Platform and AI
+Platform (Unified) Pipelines services. Note that both services are currently in
+the Experimental stage and that the provided examples may have to be updated
+when the services move to the Preview and eventually to the General
+Availability. Setting up the managed ANN service is described in the
+[ann_setup.md](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/recommendation-system/bqml-scann/ann_setup.md)
+file.  
+Note: To use the Experimental releases of AI Platform Pipelines and ANN services
+you need to allow-list you project and user account. Please contact your Google
+representative for more information and support.
+
+### Experimental variant workflow
+
+1. Compute pointwise mutual information (PMI) between items based on their
+   co-occurrences.
+1. Train item embeddings using BigQuery ML Matrix Factorization, with item
+   PMI as implicit feedback.
+1. Post-process and export the embeddings from BigQuery ML Matrix
+   Factorization Model to Cloud Storage JSONL formatted files.
+1. Create an approximate nearest search index using the ANN service and the
+   exported embedding files.
+1. Deployed to the index as an ANN service endpoint.
+
+Note that the first two steps are the same as the ScaNN library based
+solution.
 
 ![Workflow Ann](figures/ann-flow.png)
 
-
-1. Compute pointwise mutual information (PMI) between items based on their co-occurrences.
-2. Train item embeddings using BigQuery ML Matrix Factorization, with item PMI as implicit feedback.
-3. Post-process and export the embeddings from BigQuery ML Matrix Factorization Model to Cloud Storage JSONL formatted files.
-4. Create an approximate nearest search index using the ANN service and the exported embedding files.
-5. Deployed to the index as an ANN service endpoint.
-
-Note that the first two steps are the same as the ScaNN library based solution.
-
-we provide an example TFX pipeline that automates the process of training the embeddings and deploying the index.
-
-The pipeline is designed to run on AI Platform (Unified) Pipelines and relies on features introduced in v0.25 of TFX. 
-Each step of the pipeline is implemented as a [TFX Custom Python function component](https://www.tensorflow.org/tfx/guide/custom_function_component).
-All steps and their inputs and outputs are tracked in the AI Platform (Unified) ML Metadata service. 
+We provide an example TFX pipeline that automates the process of training the
+embeddings and deploying the index.  
+The pipeline is designed to run on AI Platform (Unified) Pipelines and relies on
+features introduced in v0.25 of TFX. Each step of the pipeline is implemented as
+a
+[TFX Custom Python function component](https://www.tensorflow.org/tfx/guide/custom_function_component).
+All steps and their inputs and outputs are tracked in the AI Platform (Unified)
+ML Metadata service.
 
 ![TFX Ann](figures/ann-tfx.png)
 
+### Run the experimental variant with notebooks
 
-## Using Jupyter notebooks
+1. [ann01_create_index.ipynb](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/recommendation-system/bqml-scann/ann01_create_index.ipynb)
+   - This notebook walks you through creating an ANN index, creating an ANN
+   endpoint, and deploying the index to the endpoint. It also shows how to call
+   the interfaces exposed by the deployed index.
+1. [ann02_run_pipeline.ipynb](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/blob/master/retail/recommendation-system/bqml-scann/ann02_run_pipeline.ipynb)
+   - This notebook demonstrates how to create and test the TFX pipeline and how
+   to submit pipeline runs to AI Platform (Unified) Pipelines.
 
-The solution implementation steps have been detailed in two Jupyter notebooks:
-
-1. [ann01_create_index.ipynb](ann01_create_index.ipynb) -
-This notebook walks you through creating an ANN index, creating an ANN endpoint, and deploying the index to the endpoint. It also shows how to call the interfaces exposed by the deployed index.
-
-2. [ann02_run_pipeline.ipynb](ann02_run_pipeline.ipynb) -
-This notebook demonstrates how to create and test the TFX pipeline and how to submit pipeline runs to AI Platform (Unfied) Pipelines.
-
-Before experimenting with the notebooks make sure that you have prepared the BigQuery environment and trained and extracted item embeddings using the procedures described in the ScaNN library based solution.
-
-
+Before experimenting with the notebooks, make sure that you have prepared the BigQuery environment and trained and extracted item embeddings using the procedures described in the ScaNN library based solution.
 
 ## License
 
 Copyright 2020 Google LLC
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License. You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at:
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied.
 
-See the License for the specific language governing permissions and limitations under the License.
+See the License for the specific language governing permissions and limitations
+under the License.
 
-**This is not an official Google product but sample code provided for an educational purpose**
-
+This is not an official Google product but sample code provided for an
+educational purpose
