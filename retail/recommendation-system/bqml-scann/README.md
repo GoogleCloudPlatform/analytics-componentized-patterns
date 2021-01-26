@@ -15,11 +15,11 @@ There are two variants of the solution:
    AI Platform together with open source components including ScaNN and
    [Kubeflow Pipeline](https://www.kubeflow.org/docs/pipelines/overview/pipelines-overview/).
    To use this variant, follow the instructions in the [Production
-   variant](#heading=h.zdl5xw2h3ehk) section.
+   variant](#production-variant) section.
 -  The second variant is a fully-managed solution that leverages the
    _experimental_ releases of AI Platform Pipelines and ANN service.To use this
    variant, follow the instructions in the [Experimental
-   variant](#heading=h.z0jszspzu0mu) section.
+   variant](#experimental-variant) section.
 
 ## Dataset
 
@@ -84,32 +84,32 @@ pipeline.
 
 #### Run the solution step-by-step
 
-1. Complete the steps in [Set up the GCP environment](#heading=h.77t65odcvly2).
+1. Complete the steps in [Set up the GCP environment](#set-up-the-gcp-environment).
 1. Complete the steps in [Set up the AI Platform Notebooks
-   environment](#heading=h.5qq7pv3kx842).
+   environment](#set-up-the-ai-platform-notebooks-environment).
 1. In the Jupyterlab environment of the `embeddings-notebooks` instance, open
    the file browser pane and navigate to the
    `analytics-componentized-patterns/retail/recommendation-system/bqml-scann`
    directory.
-1. Run the 00_prep_bq_and_datastore.ipynb notebook to import the `playlist`
+1. Run the `00_prep_bq_and_datastore.ipynb` notebook to import the `playlist`
    dataset, create the  `vw_item_groups` view with song and playlist data, and
    export song title and artist information to Datastore.
 1. Run the `00_prep_bq_procedures` notebook to create stored procedures
    needed by the solution.
-1. Run the 01_train_bqml_mf_pmi.ipynb notebook. This covers computing item
+1. Run the `01_train_bqml_mf_pmi.ipynb` notebook. This covers computing item
    co-occurrences using PMI, and then training a BigQuery ML matrix
    factorization mode to generate item embeddings.
-1. Run the 02_export_bqml_mf_embeddings.ipynb notebook. This covers using
+1. Run the `02_export_bqml_mf_embeddings.ipynb` notebook. This covers using
    Dataflow to request the embeddings from the matrix factorization model,
    format them as CSV files, and export them to Cloud Storage.
-1. Run the 03_create_embedding_lookup_model.ipynb notebook. This covers
+1. Run the `03_create_embedding_lookup_model.ipynb` notebook. This covers
    creating a TensorFlow Keras model to wrap the item embeddings, exporting
    that model as a SavedModel, and deploying that SavedModel to act as an
    item-embedding lookup.
-1. Run the 04_build_embeddings_scann.ipynb notebook. This covers building an
+1. Run the `04_build_embeddings_scann.ipynb` notebook. This covers building an
    approximate nearest neighbor index for the embeddings using ScaNN and AI
    Platform Training, then exporting the ScaNN index to Cloud Storage.
-1. Run the 05_deploy_lookup_and_scann_caip.ipynb notebook. This covers
+1. Run the `05_deploy_lookup_and_scann_caip.ipynb` notebook. This covers
    deploying the embedding lookup model and ScaNN index (wrapped in a Flask app
    to add functionality) created by the solution.
 
@@ -120,25 +120,25 @@ In addition to manual steps outlined above, we provide a
 that automates the process of building and deploying the solution. To run the
 solution by using the TFX pipeline, follow these steps:
 
-1. Complete the steps in [Set up the GCP environment](#heading=h.77t65odcvly2).
+1. Complete the steps in [Set up the GCP environment](#set-up-the-gcp-environment).
 1. Complete the steps in [Set up the AI Platform Notebooks
-   environment](#heading=h.5qq7pv3kx842).
+   environment](#set-up-the-ai-platform-notebooks-environment).
 1. In the Jupyterlab environment of the `embeddings-notebooks` instance, open
    the file browser pane and navigate to the
    `analytics-componentized-patterns/retail/recommendation-system/bqml-scann`
    directory.
-1. Run the 00_prep_bq_and_datastore.ipynb notebook to import the `playlist`
+1. Run the `00_prep_bq_and_datastore.ipynb` notebook to import the `playlist`
    dataset, create the  `vw_item_groups` view with song and playlist data, and
    export song title and artist information to Datastore.
 1. Run the `00_prep_bq_procedures` notebook to create stored procedures
    needed by the solution.
-1. Run the Tfx01_interactive.ipynb notebook. This covers creating and running
+1. Run the `tfx01_interactive.ipynb` notebook. This covers creating and running
    a TFX pipeline that runs the solution, which includes all of the tasks
    mentioned in the step-by-step notebooks above.
-1. Run the Tfx02_deploy_run.ipynb notebook. This covers deploying the TFX
+1. Run the `tfx02_deploy_run.ipynb` notebook. This covers deploying the TFX
    pipeline, including building a Docker container image, compiling the
    pipeline, and deploying the pipeline to AI Platform Pipelines.
-1. Run the 05_deploy_lookup_and_scann_caip.ipynb notebook. This covers
+1. Run the `05_deploy_lookup_and_scann_caip.ipynb` notebook. This covers
    deploying the embedding lookup model and ScaNN index (wrapped in a Flask app
    to add functionality) created by the solution.
 
@@ -166,7 +166,7 @@ reduce latency and improve performance.
 1. Make sure that
    [billing is enabled](https://cloud.google.com/billing/docs/how-to/modify-project)
    for your Cloud project. 
-1. [Enable the Compute Engine, Dataflow, Datastore, AI Platform, AI Platform Notebooks, Artifact Registry, Identity and Access Management, Cloud Build, BigQuery, and BigQuery Reservations APIs](https://console.cloud.google.com/flows/enableapi?apiid=ml.googleapis.com,iam.googleapis.com,compute.googleapis.com,dataflow.googleapis.com,datastore.googleapis.com,cloudbuild.googleapis.com,bigquery.googleapis.com,artifactregistry.googleapis.com,notebooks.googleapis.com,bigqueryreservation.googleapis.com&redirect=https://console.cloud.google.com&_ga=2.132655758.1626284182.1607961461-1265457095.1607614309).
+1. [Enable the Compute Engine, Dataflow, Datastore, AI Platform, AI Platform Notebooks, Artifact Registry, Identity and Access Management, Cloud Build, BigQuery, and BigQuery Reservations APIs](https://console.cloud.google.com/flows/enableapi?apiid=ml.googleapis.com,iam.googleapis.com,compute.googleapis.com,dataflow.googleapis.com,datastore.googleapis.com,cloudbuild.googleapis.com,bigquery.googleapis.com,artifactregistry.googleapis.com,notebooks.googleapis.com,bigqueryreservation.googleapis.com&redirect=https://console.cloud.google.com).
 
 ### Create a BigQuery reservation
 
@@ -220,7 +220,7 @@ Management roles.
 Create a Firestore in Datastore Mode database instance to store song title and
 artist information for lookup.
 
-1. [Open the Datastore console](https://console.cloud.google.com/datastore/welcome?_ga=2.196028332.1626284182.1607961461-1265457095.1607614309).
+1. [Open the Datastore console](https://console.cloud.google.com/datastore/welcome).
 1. Click **Select Datastore Mode**.
 1. For **Select a location**, choose the region you want to use for Datastore.
 1. Click **Create Database**.
@@ -234,7 +234,7 @@ Create a Cloud Storage bucket to store the following objects:
    embeddings.
 -  The CSV files for the processed embeddings.
 
-1. [Open the Cloud Storage console](https://console.cloud.google.com/storage/browser?_ga=2.196028332.1626284182.1607961461-1265457095.1607614309).
+1. [Open the Cloud Storage console](https://console.cloud.google.com/storage/browser).
 1. Click **Create Bucket**.
 1. For Name your bucket, type a bucket name. The name must be globally unique.
 1. For **Choose where to store your data**, select **Region** and then choose
@@ -304,9 +304,6 @@ Create a Cloud SQL instance to provide managed storage for the pipeline.
 1. Click **Configure**. The **Deploy Kubeflow Pipelines** form opens.
 1. If the following field is displayed, select an existing cluster or click
 **Create a new cluster**:  
-
-   ![image](https://drive.google.com/file/d/1hKMGbvGLoZK09Y9VlPMQsMSpD497jSr2/view?usp=drivesdk&resourcekey=0-LeMpi4X67cCAjQnOGjLZFg)
-
 1. For **Cluster zone**, choose a zone in the region you want to use for AI
    Platform Pipelines.
 1. Check **Allow access to the following Cloud APIs** to grant applications
@@ -321,7 +318,7 @@ Create a Cloud SQL instance to provide managed storage for the pipeline.
    [creating a Kubernetes secret](https://cloud.google.com/ai-platform/pipelines/docs/configure-gke-cluster#grant-access).
 1. Click **Create cluster**. This step may take several minutes.
 1. Select **Create a namespace** in the **Namespace** drop-down list. Type
-   `kubeflow-pipelines`  in **New namespace name**.
+   `kubeflow-pipelines` in **New namespace name**.
 
    To learn more about namespaces, read a blog post about
 [organizing Kubernetes with namespaces](https://cloud.google.com/blog/products/gcp/kubernetes-best-practices-organizing-with-namespaces).
@@ -344,7 +341,7 @@ Create a Cloud SQL instance to provide managed storage for the pipeline.
 
 ## Set up the AI Platform Notebooks environment
 
-You use notebooks to complete the BigQuery prerequisites and then run the
+You use notebooks to complete the prerequisites and then run the
 solution. To use the notebooks, you must clone the solution's GitHub repo to
 your AI Platform Notebooks JupyterLab instance.
 
