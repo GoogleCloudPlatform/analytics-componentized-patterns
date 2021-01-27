@@ -150,9 +150,9 @@ appropriate environment:
 1. Create and configure a GCP project.
 1. Create the GCP resources you need.
 
-> Before creating the resources, consider what regions you want to use.
-Creating resources in the same region or multi-region (like US or EU) can
-reduce latency and improve performance.
+    Before creating the resources, consider what regions you want to use.
+    Creating resources in the same region or multi-region (like US or EU) can
+    reduce latency and improve performance.
 
 1. Clone this repo to the AI Platform notebook environment.
 1. Install the solution requirements on the notebook environment.
