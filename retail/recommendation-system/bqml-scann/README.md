@@ -306,8 +306,6 @@ Create a Cloud SQL instance to provide managed storage for the pipeline.
 1. In the AI Platform Pipelines toolbar, click **New instance**. Kubeflow
    Pipelines opens in Google Cloud Marketplace.
 1. Click **Configure**. The **Deploy Kubeflow Pipelines** form opens.
-1. If the following field is displayed, select an existing cluster or click
-**Create a new cluster**:  
 1. For **Cluster zone**, choose a zone in the region you want to use for AI
    Platform Pipelines.
 1. Check **Allow access to the following Cloud APIs** to grant applications
