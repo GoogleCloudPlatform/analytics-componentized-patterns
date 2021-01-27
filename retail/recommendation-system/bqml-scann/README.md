@@ -7,6 +7,16 @@ solution are [BigQuery](https://cloud.google.com/bigquery) and
 [ScaNN](https://github.com/google-research/google-research/tree/master/scann),
 which is an open source library for efficient vector similarity search at scale.
 
+The series is for data scientists and ML engineers who want to build an
+embedding training system and serve for item-item recommendation use cases. It
+assumes that you have experience with Google Cloud,
+[BigQuery](https://cloud.google.com/bigquery), [AI
+Platform](https://cloud.google.com/ai-platform),
+[Dataflow](https://cloud.google.com/dataflow),
+[Datastore](https://cloud.google.com/datastore), and with
+[Tensorflow](https://www.tensorflow.org/) and [TFX
+Pipelines](https://www.tensorflow.org/tfx).
+
 ## Solution variants
 
 There are two variants of the solution:
@@ -47,16 +57,6 @@ At a high level, the solution works as follows:
 
 For a detailed description of the solution architecture, see
 [Architecture of a machine learning system for item matching](https://cloud.google.com/solutions/real-time-item-matching).
-
-The series is for data scientists and ML engineers who want to build an
-embedding training system and serve for item-item recommendation use cases. It
-assumes that you have experience with Google Cloud,
-[BigQuery](https://cloud.google.com/bigquery), [AI
-Platform](https://cloud.google.com/ai-platform),
-[Dataflow](https://cloud.google.com/dataflow),
-[Datastore](https://cloud.google.com/datastore), and with
-[Tensorflow](https://www.tensorflow.org/) and [TFX
-Pipelines](https://www.tensorflow.org/tfx).
 
 ### Cost
 
