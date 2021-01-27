@@ -23,7 +23,7 @@ There are two variants of the solution:
 
 ## Dataset
 
-We use the public bigquery-samples.playlists BigQuery dataset to demonstrate the
+We use the public `bigquery-samples.playlists` BigQuery dataset to demonstrate the
 solutions. We use the playlist data to learn embeddings for songs based on their
 co-occurrences in different playlists. The learned embeddings can be used to
 match and recommend relevant songs to a given song or playlist.
