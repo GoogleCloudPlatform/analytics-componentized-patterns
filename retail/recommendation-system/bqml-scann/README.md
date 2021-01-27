@@ -175,6 +175,7 @@ If you use
 for BigQuery, you must purchase flex slots and then create reservations and
 assignments for them in order to train a matrix factorization model. You can
 skip this section if you use flat-rate pricing with BigQuery.  
+
 You must have the `bigquery.reservations.create` permission in order to purchase
 flex slots. This permission is granted to the project owner, and also to the
 `bigquery.admin` and `bigquery.resourceAdmin` predefined Identity and Access
@@ -184,6 +185,7 @@ Management roles.
    click **Reservations**.
 1. On the **Reservations** page, click **Buy Slots**.
 1. On the **Buy Slots** page, set the options as follows:
+  
    1. In **Commitment duration**, choose **Flex**.
    1. In **Location**, choose the region you want to use for BigQuery.
       Depending on the region you choose, you may have to request additional
@@ -191,6 +193,7 @@ Management roles.
    1. In **Number of slots**, choose **500**.
    1. Click **Next**.
    1. In **Purchase confirmation**, type `CONFIRM`.  
+     
       **Note:** The console displays an estimated monthly cost of $14,600.00.
       You will delete the unused slots at the end of this tutorial, so you will
       only pay for the slots you use to train the model. Training the model
@@ -203,6 +206,7 @@ Management roles.
    checkmark.
 1. Click **Create Reservation**.
 1. On the **Create Reservation** page, set the options as follows:
+   
    1. In **Reservation name**, type `model`.
    1. In **Location**, choose whatever region you purchased the flex slots in.
    1. In **Number of slots**, type `500`.
@@ -326,16 +330,17 @@ Create a Cloud SQL instance to provide managed storage for the pipeline.
 1. In the **App instance name** box, enter a name for your Kubeflow
    Pipelines instance.
 1. Select **Use managed storage** and supply the following information:
-   -  **Artifact storage Cloud Storage bucket**: Specify the name of the
-      bucket you created in the "Create a Cloud Storage bucket" procedure.
-   -  **Cloud SQL instance connection name**: Specify the connection name
-      for the Cloud SQL instance you created in the "Create a Cloud SQL
-      instance" procedure. The instance connection name can be found on the
-      instance detail page in the Cloud SQL console.
-   -  **Database username**: Leave this field empty to default to **root**.
-   -  **Database password**: Specify the root user password for the Cloud
-      SQL instance you created in the "Create a Cloud SQL instance" procedure.
-   -  **Database name prefix**: Type `embeddings`.
+
+    -  **Artifact storage Cloud Storage bucket**: Specify the name of the
+       bucket you created in the "Create a Cloud Storage bucket" procedure.
+    -  **Cloud SQL instance connection name**: Specify the connection name
+       for the Cloud SQL instance you created in the "Create a Cloud SQL
+       instance" procedure. The instance connection name can be found on the
+       instance detail page in the Cloud SQL console.
+    -  **Database username**: Leave this field empty to default to **root**.
+    -  **Database password**: Specify the root user password for the Cloud
+       SQL instance you created in the "Create a Cloud SQL instance" procedure.
+    -  **Database name prefix**: Type `embeddings`.
 
 1. Click **Deploy**. This step may take several minutes.
 
@@ -351,16 +356,16 @@ your AI Platform Notebooks JupyterLab instance.
 1. In the terminal, run the following command to clone the
    `analytics-componentized-patterns` Github repository:
 
-```
-git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git
-```
+    ```
+    git clone https://github.com/GoogleCloudPlatform/analytics-componentized-patterns.git
+    ```
 
 1. In the terminal, run the following command to install packages required
    by the solution:
 
-```
-pip install -r analytics-componentized-patterns/retail/recommendation-system/bqml-scann/requirements.txt
-```
+    ```
+    pip install -r analytics-componentized-patterns/retail/recommendation-system/bqml-scann/requirements.txt
+    ```
 
 ## Experimental variant
 
