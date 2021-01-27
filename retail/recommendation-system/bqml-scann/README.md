@@ -13,7 +13,7 @@ There are two variants of the solution:
 
 -  The first variant utilizes generally available releases of BigQuery and
    AI Platform together with open source components including ScaNN and
-   [Kubeflow Pipeline](https://www.kubeflow.org/docs/pipelines/overview/pipelines-overview/).
+   [Kubeflow Pipelines](https://www.kubeflow.org/docs/pipelines/overview/pipelines-overview/).
    To use this variant, follow the instructions in the [Production
    variant](#production-variant) section.
 -  The second variant is a fully-managed solution that leverages the
