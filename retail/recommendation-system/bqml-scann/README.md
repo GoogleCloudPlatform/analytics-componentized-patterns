@@ -17,7 +17,7 @@ There are two variants of the solution:
    To use this variant, follow the instructions in the [Production
    variant](#production-variant) section.
 -  The second variant is a fully-managed solution that leverages the
-   _experimental_ releases of AI Platform Pipelines and ANN service.To use this
+   _experimental_ releases of AI Platform Pipelines and ANN service. To use this
    variant, follow the instructions in the [Experimental
    variant](#experimental-variant) section.
 
