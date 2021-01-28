@@ -325,8 +325,7 @@ Create a Cloud SQL instance to provide managed storage for the pipeline.
    To learn more about namespaces, read a blog post about
 [organizing Kubernetes with namespaces](https://cloud.google.com/blog/products/gcp/kubernetes-best-practices-organizing-with-namespaces).
 
-1. In the **App instance name** box, enter a name for your Kubeflow
-   Pipelines instance.
+1. In the **App instance name** box, type `kubeflow-pipelines`.
 1. Select **Use managed storage** and supply the following information:
 
     -  **Artifact storage Cloud Storage bucket**: Specify the name of the
