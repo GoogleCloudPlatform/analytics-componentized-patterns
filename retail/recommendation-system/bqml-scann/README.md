@@ -112,6 +112,7 @@ pipeline.
 1. Run the `05_deploy_lookup_and_scann_caip.ipynb` notebook. This covers
    deploying the embedding lookup model and ScaNN index (wrapped in a Flask app
    to add functionality) created by the solution.
+1. Optionally, complete the steps in [Delete the GCP resources](#delete-the-gcp-resources).
 
 #### Run the solution by using a TFX pipeline
 
@@ -141,6 +142,7 @@ solution by using the TFX pipeline, follow these steps:
 1. Run the `05_deploy_lookup_and_scann_caip.ipynb` notebook. This covers
    deploying the embedding lookup model and ScaNN index (wrapped in a Flask app
    to add functionality) created by the solution.
+1. Optionally, complete the steps in [Delete the GCP resources](#delete-the-gcp-resources).
 
 ## Set up the GCP environment
 
@@ -363,6 +365,40 @@ your AI Platform Notebooks JupyterLab instance.
     ```
     pip install -r analytics-componentized-patterns/retail/recommendation-system/bqml-scann/requirements.txt
     ```
+
+## Delete the GCP resources
+
+Unless you plan to continue using the resources you created in this solution, you should delete them
+to avoid incurring charges to your GCP account. You can either delete the project containing the resources, or
+keep the project but delete just those resources.
+
+Either way, you should remove the resources so you won't be billed for them in
+the future. The following sections describe how to delete these resources.
+
+### Delete the project
+
+The easiest way to eliminate billing is to delete the project you created for
+the solution.
+
+1. In the Cloud Console, go to the [Manage resources page](https://pantheon.corp.google.com/cloud-resource-manager).
+1. In the project list, select the project that you want to delete, and then click **Delete**.
+1. In the dialog, type the project ID, and then click **Shut down** to delete the project.
+
+### Delete the components
+
+If you don't want to delete the project, delete the billable components of the solution.
+These can include:
+
+1. A Bigquery assignment, reservation, and remaining flex slots (if you chose to use flex slots to train the matrix factorization model)
+1. A BigQuery dataset
+1. Several Cloud Storage buckets
+1. Datastore entities
+1. An AI Platform Notebooks instance
+1. AI Platform models
+1. A Kubernetes Engine cluster (if you used a pipeline for automation)
+1. An AI Platform pipeline (if you used a pipeline for automation)
+1. A Cloud SQL instance (if you used a pipeline for automation)
+1. A Container Registry image (if you used a pipeline for automation)
 
 ## Experimental variant
 
