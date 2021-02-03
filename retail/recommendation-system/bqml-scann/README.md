@@ -112,7 +112,7 @@ pipeline.
 1. Run the `05_deploy_lookup_and_scann_caip.ipynb` notebook. This covers
    deploying the embedding lookup model and ScaNN index (wrapped in a Flask app
    to add functionality) created by the solution.
-1. Optionally, complete the steps in [Delete the GCP resources](#delete-the-gcp-resources).
+1. If you don't want to keep the resources you created for this solution, complete the steps in [Delete the GCP resources](#delete-the-gcp-resources).
 
 #### Run the solution by using a TFX pipeline
 
@@ -142,7 +142,7 @@ solution by using the TFX pipeline, follow these steps:
 1. Run the `05_deploy_lookup_and_scann_caip.ipynb` notebook. This covers
    deploying the embedding lookup model and ScaNN index (wrapped in a Flask app
    to add functionality) created by the solution.
-1. Optionally, complete the steps in [Delete the GCP resources](#delete-the-gcp-resources).
+1. If you don't want to keep the resources you created for this solution, complete the steps in [Delete the GCP resources](#delete-the-gcp-resources).
 
 ## Set up the GCP environment
 
