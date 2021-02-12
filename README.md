@@ -6,16 +6,16 @@ From sample dataset to activation, these componentized patterns are designed to 
 
 ### Retail use cases
 * Recommendation systems:
-  * How to build a recommendation system on e-commerce data using BigQuery ML. ([Code][recomm_code] | [Blog Article][recomm_blog] | [Video](recomm_video))
+  * How to build a recommendation system on e-commerce data using BigQuery ML. ([Code][recomm_code] | [Blogpost][recomm_blog] | [Video](recomm_video))
   * How to build an item-item real-time recommendation system on song playlists data using BigQuery ML. ([Code][bqml_scann_code] | [Reference Guide][bqml_scann_guide])
 * Propensity to purchase model:
-  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines. ([Code][propen_code] | [Blog Article][propen_blog])
+  * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines. ([Code][propen_code] | [Blogpost][propen_blog])
 * Activate on Lifetime Value predictions: 
   * How to predict the monetary value of your customers and extract emails of the top customers to use in Adwords for example to create similar audiences. Automation is done by a combination of BigQuery Scripting, Stored Procedure and bash script. ([Code][ltv_code])
 * Clustering:
-  * How to build customer segmentation through k-means clustering using BigQuery ML. ([Code][clustering_code] | [Blog](clustering_blog))
+  * How to build customer segmentation through k-means clustering using BigQuery ML. ([Code][clustering_code] | [Blogpost](clustering_blog))
 * Demand Forecasting:
-  * How to build a time series demand forecasting model using BigQuery ML ([Code][demandforecasting_code] | [Blog](demandforecasting_blog) | [Video](demandforecasting_video))
+  * How to build a time series demand forecasting model using BigQuery ML ([Code][demandforecasting_code] | [Blogpost](demandforecasting_blog) | [Video](demandforecasting_video))
 
 [recomm_code]: retail/recommendation-system/bqml
 [recomm_blog]: https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110
