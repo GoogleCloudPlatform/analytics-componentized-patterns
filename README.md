@@ -7,6 +7,7 @@ From sample dataset to activation, these componentized patterns are designed to 
 ### Retail use cases
 * Recommendation systems:
   * How to build a recommendation system on e-commerce data using BigQuery ML. ([Code][recomm_code] | [Blog Article][recomm_blog])
+  * How to build an item-item real-time recommendation system on e-commerce data using BigQuery ML. ([Code][bqml_scann_code] | [Reference Guide][bqml_scann_guide]
 * Propensity to purchase model:
   * How to build an end-to-end propensity to purchase solution using BigQuery ML and Kubeflow Pipelines. ([Code][propen_code] | [Blog Article][propen_blog])
 * Activate on Lifetime Value predictions: 
@@ -18,6 +19,8 @@ From sample dataset to activation, these componentized patterns are designed to 
 
 [recomm_code]: retail/recommendation-system/bqml
 [recomm_blog]: https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110
+[bqml_scann_code]: retail/recommendation-system/bqml-scann
+[bqml_scann_guide]: https://cloud.google.com/solutions/real-time-item-matching
 [propen_code]: retail/propensity-model/bqml
 [propen_blog]: https://medium.com/google-cloud/how-to-build-an-end-to-end-propensity-to-purchase-solution-using-bigquery-ml-and-kubeflow-pipelines-cd4161f734d9
 [ltv_code]: retail/ltv/bqml
