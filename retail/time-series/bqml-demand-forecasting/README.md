@@ -7,13 +7,13 @@ By the end of [this notebook](bqml_retail_demand_forecasting.ipynb), you will kn
 * Pre-process data into the correct format needed to create an ARIMA demand forecasting model by using BigQuery ML.
 * Train the ARIMA model in BigQuery ML.
 * Evaluate the model.
-* Make predictions on future demand using the model.
+* Make predictions about future demand using the model.
 * Create a dashboard to visualize the forecasted demand using Data Studio.
 
 ## Dataset
 
 This tutorial uses the public
-[Iowa Liquor Sales](https://console.cloud.google.com/marketplace/details/obfuscated-ga360-data/obfuscated-ga360-data?filter=solution-type:dataset)
+[Iowa Liquor Sales](https://pantheon.corp.google.com/marketplace/product/iowa-department-of-commerce/iowa-liquor-sales)
 dataset that is hosted on BigQuery. This dataset contains the
 spirits purchase information of Iowa Class "E" liquor licensees from
 January 1, 2012 until the present. For more information, see the
