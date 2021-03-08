@@ -42,7 +42,7 @@ to generate a cost estimate based on your projected usage.
 
 ## Set up the GCP environment
 
-1. [If you don't want to use an existing project, create a new GCP project.](https://console.cloud.google.com/cloud-resource-manager). When you first create an account, you get a $300 free credit towards your compute/storage costs.
+1. [If you don't want to use an existing project, create a new GCP project.](https://console.cloud.google.com/cloud-resource-manager) When you first create an account, you get a $300 free credit towards your compute/storage costs.
 1. [If you created a new project, make sure that billing is enabled for it.](https://cloud.google.com/billing/docs/how-to/modify-project)
 1. [Enable the AI Platform, AI Platform Notebooks, and Compute Engine APIs in the project you plan to use.](https://console.cloud.google.com/flows/enableapi?apiid=ml.googleapis.com,notebooks.googleapis.com,compute_component)
 
