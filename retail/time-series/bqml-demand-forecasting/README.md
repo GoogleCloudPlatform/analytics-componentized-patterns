@@ -1,6 +1,6 @@
 # How to build a time series demand forecasting model using BigQuery ML
 
-The goal of this repo is to provide an end-to-end solution for forecasting the demand of multiple retail products, using [this notebook](bqml_retail_demand_forecasting.ipynb) to walk through the steps. Learn how to use BigQuery ML to train a demand forecasting model on historical sales data of liquor products, and how to visualize the forecasted values in a dashboard. For an overview of the use case, see [Overview of a demand forecasting solution](https://cloud.devsite.corp.google.com/architecture/demand-forecasting-overview).
+The goal of this repo is to provide an end-to-end solution for forecasting the demand of multiple retail products, using [this notebook](bqml_retail_demand_forecasting.ipynb) to walk through the steps. Learn how to use BigQuery ML to train a demand forecasting model on historical sales data of liquor products, and how to visualize the forecasted values in a dashboard. For an overview of the use case, see [Overview of a demand forecasting solution](https://cloud.google.com/architecture/demand-forecasting-overview).
 
 After completing the notebook, you will know how to:
 
