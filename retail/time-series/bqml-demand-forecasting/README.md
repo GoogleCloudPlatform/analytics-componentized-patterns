@@ -4,8 +4,8 @@ The goal of this repo is to provide an end-to-end solution for forecasting the d
 
 After completing the notebook, you will know how to:
 
-* Pre-process data into the correct format needed to create an ARIMA demand forecasting model by using BigQuery ML.
-* Train the ARIMA model in BigQuery ML.
+* Pre-process time series data into the correct format needed to create a demand forecasting model.
+* Train the demand forecasting model in BigQuery ML.
 * Evaluate the model.
 * Make predictions about future demand using the model.
 * Create a dashboard to visualize the forecasted demand using Data Studio.
