@@ -21,7 +21,7 @@ decisions. It assumes that you have basic knowledge of the following:
 ## Dataset
 
 This tutorial uses the public
-[Iowa Liquor Sales](https://pantheon.corp.google.com/marketplace/product/iowa-department-of-commerce/iowa-liquor-sales)
+[Iowa Liquor Sales](https://console.cloud.google.com/marketplace/product/iowa-department-of-commerce/iowa-liquor-sales)
 dataset that is hosted on BigQuery. This dataset contains the
 spirits purchase information of Iowa Class "E" liquor licensees from
 January 1, 2012 until the present. For more information, see the
@@ -69,7 +69,7 @@ the future. The following sections describe how to delete these resources.
 The easiest way to eliminate billing is to delete the project you created for
 the solution.
 
-1. In the Cloud Console, go to the [Manage resources page](https://pantheon.corp.google.com/cloud-resource-manager).
+1. In the Cloud Console, go to the [Manage resources page](https://console.cloud.google.com/cloud-resource-manager).
 1. In the project list, select the project that you want to delete, and then click **Delete**.
 1. In the dialog, type the project ID, and then click **Shut down** to delete the project.
 
