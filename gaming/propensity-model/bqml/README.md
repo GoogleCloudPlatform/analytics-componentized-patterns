@@ -16,7 +16,7 @@ limitations under the License.
 ```
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-# How to do churn prediction for game developers using Google Analytics 4 (GA4) and BigQuery ML
+# Churn prediction for game developers using Google Analytics 4 (GA4) and BigQuery ML
 
 This notebook showcases how you can use BigQuery ML to run propensity models on Google Analytics 4 data from your gaming app to determine the likelihood of specific users returning to your app.
 
