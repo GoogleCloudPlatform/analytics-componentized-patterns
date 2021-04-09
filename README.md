@@ -18,7 +18,7 @@ From sample dataset to activation, these componentized patterns are designed to 
   * How to build a time series demand forecasting model using BigQuery ML ([Code][demandforecasting_code] | [Blogpost](demandforecasting_blog) | [Video](demandforecasting_video))
 
 
-### Retail use cases
+### Gaming use cases
 * Propensity to churn model:
   * Churn prediction for game developers using Google Analytics 4 (GA4) and BigQuery ML. ([Code][gaming_propen_code] | Blogpost(TBA)) | Video(TBA))
 
