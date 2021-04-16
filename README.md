@@ -20,11 +20,11 @@ From sample dataset to activation, these componentized patterns are designed to 
 
 ### Gaming use cases
 * Propensity to churn model:
-  * Churn prediction for game developers using Google Analytics 4 (GA4) and BigQuery ML. ([Code][gaming_propen_code] | Blogpost(TBA)) | Video(TBA))
+  * Churn prediction for game developers using Google Analytics 4 (GA4) and BigQuery ML. ([Code][gaming_propen_code] | [Blogpost][gaming_propen_blog]) | [Video][gaming_propen_video])
 
 [gaming_propen_code]: gaming/propensity-model/bqml
-[gaming_propen_blog]: https://medium.com/google-cloud/
-[Video]: https://medium.com/google-cloud/
+[gaming_propen_blog]: https://cloud.google.com/blog/topics/developers-practitioners/churn-prediction-game-developers-using-google-analytics-4-ga4-and-bigquery-ml
+[gaming_propen_video]: https://www.youtube.com/watch?v=t5a0gwPM4I8
 [recomm_code]: retail/recommendation-system/bqml
 [recomm_blog]: https://medium.com/google-cloud/how-to-build-a-recommendation-system-on-e-commerce-data-using-bigquery-ml-df9af2b8c110
 [recomm_video]: https://youtube.com/watch?v=sEx8RwvT_-8
