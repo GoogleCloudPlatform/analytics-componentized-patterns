@@ -25,3 +25,5 @@ The use case is to predict the the propensity of booking for any user/hotel comb
 ## Getting Started
 Use this [notebook](kfp_tutorial.ipynb) to get started. 
 
+## Questions? Feedback?
+If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).

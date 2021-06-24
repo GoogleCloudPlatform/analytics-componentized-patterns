@@ -41,6 +41,9 @@ From sample dataset to activation, these componentized patterns are designed to 
 [demandforecasting_blog]: https://cloud.google.com/blog/topics/developers-practitioners/how-build-demand-forecasting-models-bigquery-ml
 [demandforecasting_video]: https://www.youtube.com/watch?v=dwOt68CevYA
 
+## Questions? Feedback?
+If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).
+
 ## Disclaimer
 This is not an officially supported Google product.
 

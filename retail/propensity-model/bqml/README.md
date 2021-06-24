@@ -211,3 +211,5 @@ def create_kfp_comp(rpm_comp):
     get_versioned_bqml_model_export_path_op.execution_options.caching_strategy.max_cache_staleness = "P0D"
 ```
 
+## Questions? Feedback?
+If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).
