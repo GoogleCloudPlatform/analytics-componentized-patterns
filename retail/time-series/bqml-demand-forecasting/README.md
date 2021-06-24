@@ -85,3 +85,6 @@ These include:
 This is not an officially supported Google product.
 
 All files in this folder are under the Apache License, Version 2.0 unless noted otherwise.
+
+## Questions? Feedback?
+If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).

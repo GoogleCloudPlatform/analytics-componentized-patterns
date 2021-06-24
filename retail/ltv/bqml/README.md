@@ -71,6 +71,11 @@ After you went through the notebook, you can run through all the steps at once u
 1. Run the script
     ```./run.sh --project-id [YOUR_PROJECT_ID] --dataset-id [YOUR_DATASET_ID]
 
+
+## Questions? Feedback?
+If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).
+
+
 ## Disclaimer
 This is not an officially supported Google product.
 

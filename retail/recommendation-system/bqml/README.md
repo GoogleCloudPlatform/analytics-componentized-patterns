@@ -18,3 +18,6 @@ limitations under the License.
 
 # How to build a recommendation system on e-commerce data using BigQuery ML
 With your data in BigQuery, machine learning workflows are now easier than ever with BigQuery ML. In this [notebook](bqml_retail_recommendation_system.ipynb) you’ll learn how to build a product recommendation system in a retail scenario using matrix factorization, and how to use the predicted recommendations to drive marketing activation. 
+
+## Questions? Feedback?
+If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).

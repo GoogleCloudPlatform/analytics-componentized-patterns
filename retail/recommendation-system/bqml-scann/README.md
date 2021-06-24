@@ -453,6 +453,9 @@ ML Metadata service.
 
 Before experimenting with the notebooks, make sure that you have prepared the BigQuery environment and trained and extracted item embeddings using the procedures described in the ScaNN library based solution.
 
+## Questions? Feedback?
+If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).
+
 ## License
 
 Copyright 2020 Google LLC
