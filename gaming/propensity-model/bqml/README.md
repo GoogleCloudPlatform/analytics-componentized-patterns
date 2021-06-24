@@ -41,6 +41,9 @@ If you’d like to learn more about any of the topics covered in this notebook, 
 - [BigQuery ML quickstart]
 - [Events automatically collected by Google Analytics 4]
 
+## Questions? Feedback?
+If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).
+
 [BigQuery export of Google Analytics data]: https://support.google.com/analytics/answer/9358801
 [BigQuery ML quickstart]: https://cloud.google.com/bigquery-ml/docs/bigqueryml-web-ui-start
 [Events automatically collected by Google Analytics 4]: https://support.google.com/analytics/answer/9234069
