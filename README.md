@@ -23,6 +23,11 @@ From sample dataset to activation, these componentized patterns are designed to 
 * Propensity to churn model:
   * Churn prediction for game developers using Google Analytics 4 (GA4) and BigQuery ML. ([Code][gaming_propen_code] | [Blogpost][gaming_propen_blog] | [Video][gaming_propen_video])
 
+### Financial use cases
+* Fraud detection
+  * How to build a real-time credit card fraud detection solution. ([Code][ccfraud_code] | [Blogpost][ccfraud_techblog] | [Video][ccfraud_video])
+
+
 [gaming_propen_code]: gaming/propensity-model/bqml
 [gaming_propen_blog]: https://cloud.google.com/blog/topics/developers-practitioners/churn-prediction-game-developers-using-google-analytics-4-ga4-and-bigquery-ml
 [gaming_propen_video]: https://www.youtube.com/watch?v=t5a0gwPM4I8
@@ -40,6 +45,12 @@ From sample dataset to activation, these componentized patterns are designed to 
 [demandforecasting_code]: retail/time-series/bqml-demand-forecasting
 [demandforecasting_blog]: https://cloud.google.com/blog/topics/developers-practitioners/how-build-demand-forecasting-models-bigquery-ml
 [demandforecasting_video]: https://www.youtube.com/watch?v=dwOt68CevYA
+[ccfraud_code]: https://gitlab.qdatalabs.com/uk-gtm/patterns/cc_fraud_detection/tree/master
+[ccfraud_techblog]: https://cloud.google.com/blog/products/data-analytics/how-to-build-a-fraud-detection-solution
+[ccfraud_video]: https://youtu.be/qQnxq3COr9Q
+
+
+
 
 ## Questions? Feedback?
 If you have any questions or feedback, please open up a [new issue](https://github.com/GoogleCloudPlatform/analytics-componentized-patterns/issues).
