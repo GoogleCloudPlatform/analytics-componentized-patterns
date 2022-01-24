@@ -26,6 +26,7 @@ From sample dataset to activation, these componentized patterns are designed to 
 ### Financial use cases
 * Fraud detection
   * How to build a real-time credit card fraud detection solution. ([Code][ccfraud_code] | [Blogpost][ccfraud_techblog] | [Video][ccfraud_video])
+  * How to use explainable AI to understand a fraud prediction. ([Code][xai_code] | [Blogpost][xai_blog])
 
 
 [gaming_propen_code]: gaming/propensity-model/bqml
@@ -48,7 +49,8 @@ From sample dataset to activation, these componentized patterns are designed to 
 [ccfraud_code]: https://gitlab.qdatalabs.com/uk-gtm/patterns/cc_fraud_detection/tree/master
 [ccfraud_techblog]: https://cloud.google.com/blog/products/data-analytics/how-to-build-a-fraud-detection-solution
 [ccfraud_video]: https://youtu.be/qQnxq3COr9Q
-
+[xai_code]: finance/explainable-fraud-model-bqml-looker
+[xai_blog]: https://cloud.google.com/blog/products/data-analytics/explainable-ai-using-bigquery-machine-learning-and-looker 
 
 
 
