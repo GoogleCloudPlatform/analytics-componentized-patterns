@@ -27,6 +27,63 @@ spirits purchase information of Iowa Class "E" liquor licensees from
 January 1, 2012 until the present. For more information, see the
 [official documentation by the State of Iowa](https://data.iowa.gov/Sales-Distribution/Iowa-Liquor-Sales/m3tr-qhgy).
 
+## Using forecasting for inventory management
+
+In the retail business, it is important to find a balance when it comes to
+inventory: don't stock too much, but don't stock too little. For a large
+business, this can mean making decisions about inventory levels for
+potentially millions of products.
+
+To inform inventory level decisions, you can take advantage of historical
+data about items purchased by consumers over time. You can use this data about
+past customer behavior to make predictions about likely future purchases, which
+you can then use to make decisions about how much inventory to stock. In this
+scenario, time series forecasting is the right tool to use.
+
+Time series forecasting depends on the creation of machine learning (ML) models.
+If you are a member of a data science team that supports inventory decisions,
+this can mean not only producing large numbers of forecasts, but also procuring
+and managing the infrastructure to handle model training and prediction. To
+save time and effort, you can use BigQuery ML SQL statements to
+train, evaluate and deploy models in BigQuery ML instead of
+configuring a separate ML infrastructure.
+
+## How time series modeling works in BigQuery ML
+
+When you train a time series model with BigQuery ML, multiple
+components are involved, including an
+[Autoregressive integrated moving average (ARIMA)](https://en.wikipedia.org/wiki/Autoregressive_integrated_moving_average)
+model. The BigQuery ML model creation pipeline uses the following
+components, listed in the order that they are run:
+
+1.  Pre-processing: Automatic cleaning adjustments to the input time
+    series, which addresses issues like missing values, duplicated timestamps,
+    spike anomalies, and accounting for abrupt level changes in the time series
+    history.
+1.  Holiday effects: Time series modeling in BigQuery ML can also account
+    for holiday effects. By default, holiday effects modeling is disabled. But
+    since this data is from the United States, and the data includes a minimum
+    one year of daily data, you can also specify an optional `HOLIDAY_REGION`.
+    With holiday effects enabled, spike and dip anomalies that appear during
+    holidays will no longer be treated as anomalies. For more information, see
+    [HOLIDAY_REGION](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-time-series#holiday_region).
+1.  Seasonal and trend decomposition using the
+    [Seasonal and Trend decomposition using Loess (STL)](https://otexts.com/fpp2/stl.html)
+    algorithm. Seasonality extrapolation using the
+    [double exponential smoothing (ETS)](https://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing)
+    algorithm.
+1.  Trend modeling using the ARIMA model and the
+    [auto.ARIMA](https://otexts.com/fpp2/arima-r.html)
+    algorithm for automatic hyper-parameter tuning. In auto.ARIMA, dozens of
+    candidate models are trained and evaluated in parallel. The best model comes
+    with the lowest
+    [Akaike information criterion (AIC)](https://wikipedia.org/wiki/Akaike_information_criterion).
+
+You can use a single SQL statement to train the model to forecast a single
+product or to forecast multiple products at the same time. For more
+information, see
+[The CREATE MODEL statement for time series models](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-time-series).
+
 ## Costs 
 
 This tutorial uses billable components of Google Cloud Platform (GCP):
