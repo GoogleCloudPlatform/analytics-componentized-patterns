@@ -1,4 +1,4 @@
-tensorflow==2.4.0
+tensorflow==2.11.1
 tfx==0.25.0
 apache-beam[gcp]
 google-cloud-bigquery 
