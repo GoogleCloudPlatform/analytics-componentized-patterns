@@ -1,3 +1,6 @@
+> [!NOTE]
+> This repository has been archived and is no longer actively maintained.
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 ## Analytics Componentized Patterns
